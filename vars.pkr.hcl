@@ -1,5 +1,5 @@
-# Variables
-
+##  Variables
+# ====================
 variable "region" {
     type    = string
     default = "eu-central-1"
@@ -16,12 +16,24 @@ variable "instance_type" {
 variable "ami_name" {
     type        =   string
     description =   "The ID of the machine image (AMI) to use for the server."
-    default     =   "t3.xlarge"
+    default     =   "ami-04dfd853d88e818e8"
+}
+
+ariable "ami" {
+    type        =   string
+    description =   "machine image (AMI)."
+    default     =   []
+}
+
+variable "owners " {
+    type    = string
+    default = "637423636753"
 }
 
 
 variable "ubuntu_version" {
-    default = "ubuntu-focal-20.04-amd64"
+    type    = string
+    default = "ubuntu-focal-20.04-amd64-server"
 }
 
 variable "image_id" {
@@ -41,11 +53,15 @@ variable "ssh_username" {
 
 locals {
   files = {
-    install.sh = {
-      destination = "$HOME"
-    }
-    bar = {
-      destination = "baar"
+    install_docker.sh = {
+      destination = [ "HOME_DIR=/home/ubuntu" ]
     }
   }
 }
+
+variable "new_profile" {
+  type      =   string
+  default   =   "SysAdmin+Networking-637423636753"
+}
+
+

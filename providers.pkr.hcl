@@ -12,16 +12,16 @@ packer {
 
 source "amazon-ebs" "ami" {
     ami_name      = var.ami_name
-    instance_type = ""
+    instance_type = var.instance_type
     region        = var.region
     source_ami_filter {
         filters = {
-            name                = "ubuntu/images/*${var.ubuntu_version}-server-*"
-            root-device-type    ="ebs" 
-            virtualization-type = "hvm"
+            name                =   "ubuntu/images/*${var.ubuntu_version}-*"
+            root-device-type    =   "ebs" 
+            virtualization-type =   "hvm"
         }
         most_recent = true
-        owners      = ["099720109477"]
+        owners      = var.owners
     }
     ssh_username = var.ssh_username
 }
@@ -50,11 +50,10 @@ build {
         execute_command   = "echo 'ubuntu' | {{.Vars}} sudo -S -E sh -eux '{{.Path}}'"
         expect_disconnect = true
         // fileset will list files in etc/scripts sorted in an alphanumerical way.
-        scripts           = fileset(".", "etc/scripts/*.sh")
+        scripts           = fileset("./", "docker/install_docker.sh")
     }
     post-processor "shell-local" {
-
-        inline = ["echo 2 > ${build.name}.2.txt"]
+        inline = ["docker-compose.yaml up -d build > ${build.name}.txt"]
     
     }
 }

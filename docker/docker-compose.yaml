@@ -1,0 +1,88 @@
+version: '3.5'
+services:
+  zabbix-server:
+    container_name: zabbix-server
+    image: zabbix/zabbix-server-mysql:ubuntu-6.4.11
+    ports:
+      - "10051:10051"
+    restart: always
+    volumes:
+      - "./zabbix/alertscripts:/usr/lib/zabbix/alertscripts" 
+    env_file:
+      - ./zabbix/.env_srv
+    links:
+      - mysql-server
+    environment:
+      - DB_SERVER_HOST=mysql-server
+      - MYSQL_USER=zabbix
+      - MYSQL_PASSWORD=Zabbix@1234
+    depends_on:
+      - mysql-server
+    stop_grace_period: 5s
+    sysctls:
+      - net.ipv4.ip_local_port_range=1024 65000
+      - net.ipv4.conf.all.accept_redirects=0
+      - net.ipv4.conf.all.secure_redirects=0
+      - net.ipv4.conf.all.send_redirects=0
+
+
+
+  mysql-server:
+    container_name: mysql-server
+    image: mysql:8.0-oracle
+    #init: true
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    command: --skip-grant-tables
+    command: --skip-networking
+    command: --ignore-db-dir=lost+found
+    command: --initialize-insecure
+    #command: --disable-partition-engine-check
+    environment:
+      - MYSQL_USER=zabbix
+      - MYSQL_ROOT_HOSTS=%
+      - MYSQL_DATABASE=zabbix
+      - MYSQL_PASSWORD=Zabbix@1234
+      - MYSQL_CHARSET=utf8mb4
+      - MYSQL_COLLATION=utf8mb4_general_ci
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+    tmpfs: /tmp
+    ports:
+      - "3306:3306"
+    volumes:
+       - "./data:/var/lib/mysql/zabbix"
+    env_file:
+      - ./zabbix/.env_db_mysql
+    stop_grace_period: 1m
+
+
+  zabbix-frontend:
+    container_name: zabbix-frontend
+    image: zabbix/zabbix-web-nginx-mysql:ubuntu-6.4.11
+    restart: always
+    links: 
+      - mysql-server
+    ports:
+      - '80:8080'
+      - '443:8443'
+    hostname: zabbix-frontend
+    environment:
+      - PHP_TZ="Europe/London"
+      - DB_SERVER_HOST=mysql-server
+      - MYSQL_DATABASE=zabbix
+      - MYSQL_USER=zabbix
+      - MYSQL_PASSWORD=Zabbix@1234
+    env_file:
+      - ./zabbix/.env_web
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    stop_grace_period: 10s
+    depends_on: 
+      - mysql-server
+      - zabbix-server
+    sysctls:
+      - net.core.somaxconn=65535
