@@ -76,3 +76,4 @@ menu_option_1() {
   if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit 1
   fi
+}

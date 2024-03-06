@@ -30,12 +30,12 @@ module "vpc" {
   name = var.vpc_name
   cidr = var.vpc_cidr
 
-  azs             = var.vpc_azs
-  private_subnets = var.vpc_private_subnets
-  public_subnets  = var.vpc_public_subnets
+  azs             = var.azs
+  private_subnets = var.private_subnets
+  public_subnets  = var.public_subnets
 
-  enable_nat_gateway = var.vpc_enable_nat_gateway
-  enable_vpn_gateway = var.vpc_enable_vpn_gateway
+  enable_nat_gateway = var.enable_nat_gateway
+  enable_vpn_gateway = var.enable_vpn_gateway
 }
 module "sg" {
   source  = "terraform-aws-modules/security-group/aws//modules/http-80"
