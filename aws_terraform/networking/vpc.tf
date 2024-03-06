@@ -38,6 +38,7 @@ resource "aws_subnet" "var.zonea_subnet" {
 
 resource "aws_subnet" "var.zoneb_subnet" {
     count                    = local.len_public_subnets
+    
     #availability_zone       = "eu-central-1b"
     availability_zone        = length(regexall("^[a-z]{2}-", element(var.azs, count.index))) > 0 ? element(var.azs, count.index) : null
     availability_zone_id     = length(regexall("^[a-z]{2}-", element(var.azs, count.index))) == 0 ? element(var.azs, count.index) : null
@@ -52,7 +53,7 @@ resource "aws_subnet" "var.zoneb_subnet" {
 }
 
 resource "aws_subnet" "var.private_subnet" {
-    vpc_id            = aws_vpc.var.vpc_name.id
+    vpc_id            = aws_vpc.this
     cidr_block        = "172.31.0.0/20"
     availability_zone = "eu-central-1c"
     tags = {
@@ -135,6 +136,4 @@ resource "aws_security_group" "data-sg" {
         Name = "data-sg"
   }
 }
-
-
 

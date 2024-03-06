@@ -47,6 +47,6 @@ wp-config.php
 # uncomment the next line
 #/wp-content/themes
 
-/main.tf
-/infex.html
-/docker.tf
+main.tf
+infex.html
+docker.tf

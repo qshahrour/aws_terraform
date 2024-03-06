@@ -22,9 +22,9 @@ variable "profile" {
     description =   "value"
     default     =   "default"
 }   
-variable "" {
+variable "region" {
     description =   "value"
-    default     =   ""
+    default     =   "eu-central-1"
 }   
 
 variable "vpc_id" {

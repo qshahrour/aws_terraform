@@ -1,21 +1,13 @@
 
-module "networking" {
-    source =  required_providers = {
-    
-    }
-}
 
 
-provider "aws" {
-    region = "var.main_region" # Virginia
-}
 resource "" "name" {
 
 }
 # Networking
 
 resource "aws_route_table_association" "sub1_ass" {
-    subnet_id      = aws_subnet.var.zonea_subnet.id
+    subnet_id      = aws_subnet.var.subnet.id
     route_table_id = aws_route_table.var.main_rtbc.id
 }
 
@@ -38,7 +30,7 @@ resource "aws_security_group" "http-sg" {
         from_port   = 22
         to_port     = 22
         protocol    = "tcp"
-        cidr_blocks = [aws_subnet.zonea_subnet.cidr_block, "190.86.109.131/32"]
+        cidr_blocks = [aws_subnet.subnet.cidr_block, "190.86.109.131/32"]
   }
     ingress {
         description = "Allow port HTTP"
@@ -53,7 +45,7 @@ resource "aws_security_group" "http-sg" {
         from_port   = -1
         to_port     = -1
         protocol    = "icmp"
-        cidr_blocks = [aws_subnet.zonea_subnet.cidr_block, "190.86.109.131/32"]
+        cidr_blocks = [aws_subnet.subnet.cidr_block, "190.86.109.131/32"]
   }
     egress {
         description = "Allow All for Egress"
@@ -73,7 +65,7 @@ resource "aws_security_group" "http-sg" {
 # custo interface with static IP
 resource "aws_network_interface" "ni01" {
     subnet_id       = aws_subnet.sn01.id
-    security_groups = [aws_security_group.sg01.id]
+    security_groups = [aws_security_group.default.id]
     private_ips     = ["10.0.1.4"]
     tags = {
       Name = "Primary Network Interface"
@@ -81,7 +73,7 @@ resource "aws_network_interface" "ni01" {
 }
 
 # Intance with custom network interface
-resource "aws_instance" "container_instance" {
+resource "aws_instance" "instance_name" {
     ami           = "var.ubuntu_image"
     instance_type = "t2.micro"
     network_interface {
@@ -95,19 +87,19 @@ resource "aws_instance" "container_instance" {
     }
 }
 
-#resource "aws_instance" "" {
-#    ami                    = "ami-0dc2d3e4c0f9ebd18"
-#  instance_type          = "t2.micro"
-#  subnet_id              = aws_subnet.sn01.id
-#  vpc_security_group_ids = [aws_security_group.sg01.id]
+resource "aws_instance" "" {
+    ami                    = "ami-0dc2d3e4c0f9ebd18"
+    instance_type          = "t2.micro"
+    subnet_id              = aws_subnet.sn01.id
+    vpc_security_group_ids = [aws_security_group.sg01.id]
   # this provocate always recreate
-  #  vpc_security_group_ids = [aws_security_group.sg.id]
-  #key_name = "Frankfurt_key"
-  #tags = {
-  #  Name = "ec2-tf-server-02"
-  #  OS   = "Amazon Linux 2 AMI x86"
-  #}
-#}
+    #vpc_security_group_id = [aws_security_group.sg.id]
+    key_name = "Frankfurt_key"
+    tags = {
+        Name = "ec2-tf-server-02"
+        OS   = "Amazon Linux 2 AMI x86"
+    }
+}
 
 # Instance with default vpc and default security group
 #resource "aws_instance" "instance03" {
@@ -124,8 +116,11 @@ resource "aws_instance" "container_instance" {
 #}
 
 
+######
+## output   =   =>
+
 output "instance_public_ip" {
-    value       = aws_instance.container_instance.public_ip
+    value       = aws_instance.instance_name.public_ip
     description = "EC2 instance 01 Public IP"
 }
 
