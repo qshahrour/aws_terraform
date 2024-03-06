@@ -1,19 +1,19 @@
 
 
 resource "aws_instance" "ultimate" {
-  ami           = var.ami_id
-  instance_type = var.instance_type
-  tags = {
-    Name = "instance-ultimate-tf"
-  }
+    ami           = var.ami_id
+    instance_type = var.instance_type
+    tags = {
+      Name = "instance-ultimate-tf"
+    }
 }
 
 resource "aws_eip" "ip_address" {
-  instance  = aws_instance.ultimate.id
-  vpc       = true
-  tags = {
-    Name = "ultimate-EIP-tf "
-  }   
+    instance  = aws_instance.ultimate.id
+    vpc       = true
+    tags = {
+      Name = "ultimate-EIP-tf "
+    }   
 }
 
 # OUTPUTS
@@ -75,40 +75,40 @@ resource "aws_route_table_association" "rta01" {
 #
 
 resource "aws_security_group" "default" {
-  vpc_id = aws_vpc.Infra_VPC_Frankfurt.id
-  name   = "sg01-tf-vpc01"
-  ingress {
-    description = "Allow port 22"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = [aws_subnet.sn01.cidr_block, "190.86.109.131/32"]
+    vpc_id = aws_vpc.Infra_VPC_Frankfurt.id
+    name   = "sg01-tf-vpc01"
+    ingress {
+      description = "Allow port 22"
+      from_port   = 22
+      to_port     = 22
+      protocol    = "tcp"
+      cidr_blocks = [aws_subnet.sn01.cidr_block, "190.86.109.131/32"]
   }
   ingress {
-    description = "Allow port HTTP"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+      description = "Allow port HTTP"
+      from_port   = 80
+      to_port     = 80
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
 
   }
   ingress {
-    description = "Allow ICMP"
-    from_port   = -1
-    to_port     = -1
-    protocol    = "icmp"
-    cidr_blocks = [aws_subnet.subnet-09f01298ef6db69fb.cidr_block, "190.86.109.131/32"]
+      description = "Allow ICMP"
+      from_port   = -1
+      to_port     = -1
+      protocol    = "icmp"
+      cidr_blocks = [aws_subnet.subnet-09f01298ef6db69fb.cidr_block, "190.86.109.131/32"]
   }
   egress {
-    description = "Allow all for egress"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+      description = "Allow all for egress"
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name        = "sg01-tf-allow-ssh-http"
-    Description = "Allow SSH & HTTP"
+      Name        = "sg01-tf-allow-ssh-http"
+      Description = "Allow SSH & HTTP"
   }
 }
 
@@ -116,21 +116,21 @@ resource "aws_security_group" "default" {
 
 # custo interface with static IP
 resource "aws_network_interface" "ni01" {
-  subnet_id       = aws_subnet.sn01.id
-  security_groups = [aws_security_group.sg01.id]
-  private_ips     = ["10.0.1.4"]
-  tags = {
-    Name = "Primary Network Interface"
-  }
+    subnet_id       = aws_subnet.sn01.id
+    security_groups = [aws_security_group.sg01.id]
+    private_ips     = ["10.0.1.4"]
+    tags = {
+      Name = "Primary Network Interface"
+    }
 }
 
 # Intance with custom network interface
 resource "aws_instance" "standard" {
-  ami           = "ami-0dc2d3e4c0f9ebd18"
-  instance_type = "t2.micro"
-  network_interface {
-    network_interface_id = aws_network_interface.ni01.id
-    device_index         = 0
+    ami           = "ami-0dc2d3e4c0f9ebd18"
+    instance_type = "t2.micro"
+    network_interface {
+      network_interface_id = aws_network_interface.ni01.id
+      device_index         = 0
   }
   key_name = "myawskey"
   tags = {

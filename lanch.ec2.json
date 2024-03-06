@@ -1,0 +1,19 @@
+{
+    "variables": {
+        "AWS_PROFILE": "SysAdmin+Networking-637423636753",
+        "AMI_SOURCE_ID": "ami-",
+        "AWS_REGION": "eu-central-1",
+        "BUILD_SUBNET_ID": "subnet-xxxxxx",
+        "INSTANCE_TYPE": "t2.micro",
+        "VPC_ID": "vpc-xxxxxx",
+        "volume_size": "40",
+        "device_name": "/dev/sdf",
+        "OWNER": "<project_owner>",
+        "EMAIL": "<email_address>",
+        "PROJECT": "Packer Account",
+        "ENVIRONMENT": "Staging",
+        "JOB_NAME": "jenkins-packer-builder",
+        "JOB_DESCRIPTION": "Packer job to build Jenkins AMIs",
+        "AMI_NAME": "base",
+        "AMI_DESCRIPTION": "MAIN AMI"
+    },

@@ -34,7 +34,7 @@ wp-config.php
 
 # htaccess
 /.htaccess
-
+./aws_terraform/terraform.tfvars
 # All plugins
 #
 # Note: If you wish to whitelist plugins,
@@ -47,6 +47,6 @@ wp-config.php
 # uncomment the next line
 #/wp-content/themes
 
-main.tf
-infex.html
-docker.tf
+/main.tf
+/infex.html
+/docker.tf

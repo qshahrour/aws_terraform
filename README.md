@@ -17,14 +17,14 @@ locals {
 # Basic example of an Amazon data source authentication using assume_role:
 
 data "amazon-parameterstore" "basic-example" {
-  name = "packer_test_parameter"
-  with_decryption = false
+    name = "packer_test_parameter"
+    with_decryption = false
 
-  assume_role {
-      role_arn     = "arn:aws:iam::ACCOUNT_ID:role/ROLE_NAME"
-      session_name = "SESSION_NAME"
-      external_id  = "EXTERNAL_ID"
-  }
+    assume_role {
+        role_arn     = "arn:aws:iam::ACCOUNT_ID:role/ROLE_NAME"
+        session_name = "SESSION_NAME"
+        external_id  = "EXTERNAL_ID"
+    }
 }
 
 data "amazon-ami" "basic-example" {
