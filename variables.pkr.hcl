@@ -1,5 +1,7 @@
-##  Variables
-# ====================
+# ==================
+#  Variables Fiel
+# ==================
+
 variable "region" {
     type    = string
     default = "eu-central-1"
@@ -19,11 +21,11 @@ variable "ami_name" {
     default     =   "ami-04dfd853d88e818e8"
 }
 
-ariable "ami" {
-    type        =   string
-    description =   "machine image (AMI)."
-    default     =   []
-}
+#ariable "ami" {
+#    type        =   string
+#    description =   "machine image (AMI)."
+#    default     =   []
+#}
 
 variable "owners " {
     type    = string
@@ -36,7 +38,7 @@ variable "ubuntu_version" {
     default = "ubuntu-focal-20.04-amd64-server"
 }
 
-variable "image_id" {
+variable "ami" {
     type    = string
     default = "packer-linux-aws"
     validation {
@@ -51,15 +53,8 @@ variable "ssh_username" {
 }
 
 
-locals {
-  files = {
-    install_docker.sh = {
-      destination = [ "HOME_DIR=/home/ubuntu" ]
-    }
-  }
-}
 
-variable "new_profile" {
+variable "aws_profile" {
   type      =   string
   default   =   "SysAdmin+Networking-637423636753"
 }

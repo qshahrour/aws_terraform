@@ -1,4 +1,4 @@
-# Source File for building ec2 template
+# Data Source File for building ec2 template
 
 
 data "amazon-ami" "ubuntu-jammy-amd64" {

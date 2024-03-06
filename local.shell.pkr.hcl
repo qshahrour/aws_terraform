@@ -1,5 +1,15 @@
 
 
+
+
+locals {
+  files = {
+    install_docker.sh = {
+      destination = [ "HOME_DIR=/home/ubuntu" ]
+    }
+  }
+}
+
 build {
     sources = [
         "source.amazon-ebs.standard",
@@ -14,8 +24,9 @@ build {
         max_retries = 5
         timeout = "5m"
     }
-    # This provisioner only runs for the 'first-example' source.
 
+
+    # This provisioner only runs for the 'first-example' source.
     provisioner "shell" {
         only = ["amazon-ebs.standard"]
         inline = [
@@ -26,6 +37,7 @@ build {
         ]
     }
 
+    # This provisioner only the second for the source.
     provisioner "shell" {
         environment_vars  = [ "HOME_DIR=/home/${var.ssh_user}" ]
         execute_command   = "echo '${var.ssh_user}' | {{.Vars}} sudo -S -E sh -eux '{{.Path}}'"
@@ -35,10 +47,12 @@ build {
     }
 
     provisioner "shell" {
-		only = ["amazon-ebs.unlimited"]
+		
+        only = ["amazon-ebs.unlimited"]
 		inline = ["TOKEN=`curl -s -X PUT \"http://169.254.169.254/latest/api/token\" -H \"X-aws-ec2-metadata-token-ttl-seconds: 21600\"` && curl -H \"X-aws-ec2-metadata-token: $TOKEN\" -s http://169.254.169.254/latest/meta-data/"]
 		script = "./${path.root}/010-update,sh"
 		environment_vars = ["USER=${var.ssh_user}", "BUILDER=${upper(build.ID)}"]
+
 	}
 
     provisioner "shell" {

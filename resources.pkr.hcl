@@ -1,11 +1,4 @@
-packer {
-  required_plugins {
-    amazon = {
-      version = ">= 0.0.1"
-      source  = "github.com/hashicorp/amazon"
-    }
-  }
-}
+
 
 resource "aws_instance" "ultimate" {
   ami           = var.ami_id
@@ -15,12 +8,12 @@ resource "aws_instance" "ultimate" {
   }
 }
 
-resource "aws_eip" "elastic_ip" {
+resource "aws_eip" "ip_address" {
   instance  = aws_instance.ultimate.id
   vpc       = true
   tags = {
-    Name = "ultimate-EIP-tf"
-  }
+    Name = "ultimate-EIP-tf "
+  }   
 }
 
 # OUTPUTS
@@ -30,7 +23,6 @@ output "ip_address" {
 }
 
 output "eip_ip_address" {
-  value       = aws_eip.elastic_ip.public_ip
   description = "Elastic IP Address"
 }
 
@@ -74,10 +66,14 @@ resource "aws_route_table" "rt01" {
 
 resource "aws_route_table_association" "rta01" {
   subnet_id      = aws_subnet.sn01.id
-  route_table_id = aws_route_table.rt01.id
+  route_table_id = aws_route_table.r0t01.id
 }
-
+##################
 # Security Group
+#################
+
+#
+
 resource "aws_security_group" "default" {
   vpc_id = aws_vpc.Infra_VPC_Frankfurt.id
   name   = "sg01-tf-vpc01"
