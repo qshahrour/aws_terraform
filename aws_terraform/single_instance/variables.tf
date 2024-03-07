@@ -5,7 +5,7 @@ variable "region" {
     type        =   list(string)
     default     =   "eu-central-1" 
 }
-variable "container_instance" {
+variable "instance" {
     description =   "value"
     default     =   ""
 }   

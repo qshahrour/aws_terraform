@@ -1,9 +1,9 @@
 
 
-resource "aws_iam_role" "eks_cluster" {
+resource "aws_iam_role" "cluster" {
   #name = "-${var.Environment}"
-  name   = var.Environment
-  assume_role_policy = <<POLICY
+  #name                  = var.Environment
+  assume_role_policy    = <<POLICY
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -23,12 +23,12 @@ POLICY
 #attach policies to EKS CLUSTER
 resource "aws_iam_role_policy_attachment" "" {
   policy_arn = "arn:aws:iam::aws:policy/"
-  role = aws_iam_role..name
+  role = aws_iam_role.name
 }
 
 resource "aws_iam_role_policy_attachment" "" {
   policy_arn = "arn:aws:iam::aws:policy/"
-  role = aws_iam_role..name
+  role = aws_iam_role.name
 }
 #attach policies end here
 

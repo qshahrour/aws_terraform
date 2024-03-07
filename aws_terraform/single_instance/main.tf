@@ -87,14 +87,14 @@ resource "aws_instance" "instance_name" {
     }
 }
 
-resource "aws_instance" "" {
-    ami                    = "ami-0dc2d3e4c0f9ebd18"
-    instance_type          = "t2.micro"
-    subnet_id              = aws_subnet.sn01.id
-    vpc_security_group_ids = [aws_security_group.sg01.id]
+resource "instance" "" {
+    ami                    = var.ami.id
+    instance_type          = var.instance_type
+    subnet_id              = aws_vpc.public_subnets.id
+    vpc_security_group_ids = [aws_security_group.security_groups.id]
   # this provocate always recreate
     #vpc_security_group_id = [aws_security_group.sg.id]
-    key_name = "Frankfurt_key"
+    key_name = ""
     tags = {
         Name = "ec2-tf-server-02"
         OS   = "Amazon Linux 2 AMI x86"

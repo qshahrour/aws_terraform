@@ -135,20 +135,16 @@ variable "public_subnets" {
   default       =   []
 }
 
-resource "aws_vpc" "dmz" {
-  cidr_block = "${var.vpc_cidr}"
-}
-
 resource "aws_vpc" "vpc" {
   cidr_block = "${var.vpc_name}"
 }
 
-resource "aws_vpc" "dmz" {
-  cidr_block = "${var.vpc_id}"
+resource "aws_vpc" "public_subnets" {
+  cidr_block = "${var.vpc_cidr}"
 }
 
 
-resource "aws_vpc" "DMZ" {
+resource "aws_vpc" "dmz" {
   cidr_block = "${var.vpc_dmz_cidr}"
 }
 
@@ -156,16 +152,13 @@ resource "aws_vpc" "dmz" {
   cidr_block = "${var.vpc_name}"
 }
 
-
-resource "aws_vpc" "private" {
-  cidr_block = "${var.private_subnets}"
+variable "test_map" {
+    type = map(string)
+    default = {
+        Name = "Juan"
+        LastName = "Perez"
+    }
 }
-
-resource "aws_vpc" "public" {
-  cidr_block = "${var.public_subnets}"
-}
-
-
 
 
 
@@ -265,9 +258,27 @@ variable "Environment" {
   type    =   list(string)
 }
 
+variable "ec2_key_name" {
+    description   =   "Zone a subnet"
+    default       =   ""
+}  
+
 locals {
   amazon_environments = {
       first_branch    =  "dev"
       second_branch   =   "production"
   }
 }
+
+variable "object_list" {
+  default     =   ""
+}
+
+output "value_object_list_all_last_names" {
+    value     = [for s in var.object_list : s.LastName]
+}
+
+output "x_workspace_name" { 
+    value     = terraform.workspace
+}
+

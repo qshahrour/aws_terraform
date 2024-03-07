@@ -1,7 +1,7 @@
 
 module.exports = {
     apps: [{
-        script: 'api.js',
+        script: "./node_modules/nuxt/bin/nuxt.js",
     }, {
         script: 'worker.js'
     }],
@@ -9,6 +9,15 @@ module.exports = {
     // Deployment Configuration
     deploy: {
         production: {
+            name: process.env.NUXT_ENV_PROJECT_NAME,
+            exec_mode: "cluster",
+            instances: "max", // Or a number of instances
+            cwd: '/var/www/ingotbrokers-website/',
+            args: "start",
+            max_memory_restart: "500M",
+            log_date_format: "YYYY-MM-DD HH:mm Z",
+            time: true,
+
             "user": "ubuntu",
             "host": ["192.168.0.13", "192.168.0.14", "192.168.0.15"],
             "ref": "origin/master",
@@ -19,31 +28,31 @@ module.exports = {
     }
 };
 
-pm2 deploy production setup
-# Revert to - 1 deployment
-$ pm2 deploy production revert 1
-$ pm2 deploy production exec "pm2 reload all"
+; pm2 deploy production setup
+    ; Revert to - 1 deployment
+    ; pm2 deploy production revert 1
+    ; pm2 deploy production exec "pm2 reload all"
 
 
-Deployment Lifecycle
-"pre-setup" : "echo 'commands or local script path to be run on the host before the setup process starts'",
-"post-setup": "echo 'commands or a script path to be run on the host after cloning the repo'",
-"pre-deploy" : "pm2 startOrRestart ecosystem.json --env production",
-"post-deploy" : "pm2 startOrRestart ecosystem.json --env production",
-"pre-deploy-local" : "echo 'This is a local executed command'"
+    ; Deployment Lifecycle
+    ; "pre-setup" : "echo 'commands or local script path to be run on the host before the setup process starts'",
+; "post-setup": "echo 'commands or a script path to be run on the host after cloning the repo'",
+; "pre-deploy" : "pm2 startOrRestart ecosystem.json --env production",
+; "post-deploy" : "pm2 startOrRestart ecosystem.json --env production",
+; "pre-deploy-local" : "echo 'This is a local executed command'"
 
-# ~/.ssh/config
-Host alias
-HostName myserver.com
-User username
-IdentityFile ~/.ssh/mykey
-# Usage: `ssh alias`
-# Alternative: `ssh -i ~/.ssh/mykey username@myserver.com`
+    ; ~/.ssh/config
+    ; Host alias
+    ; HostName myserver.com
+    ; User username
+    ; IdentityFile ~/.ssh/mykey
+    ; Usage: `ssh alias`
+    ; Alternative: `ssh -i ~/.ssh/mykey username@myserver.com`
 
-Host deployment
-HostName github.com
-User username
-IdentityFile ~/.ssh/github_rsa
-# Usage:
-# git @deployment: username / anyrepo.git
-# This is for cloning any repo that uses that IdentityFile.
+    ; Host deployment
+    ; HostName github.com
+    ; User username
+    ; IdentityFile ~/.ssh/github_rsa
+    ; Usage:
+; git @deployment: username / anyrepo.git
+    ; This is for cloning any repo that uses that IdentityFile.
