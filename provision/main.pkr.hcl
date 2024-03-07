@@ -1,8 +1,7 @@
 
 
 provider "aws" {
-    source                      = "hashicorp/aws"
-    #  Fix version version of the AWS provider
+    source                      = github.com/hashicorp/aws
     version                     = "= 5.3.0"
     region                      = var.region
     shared_credentials_files    = ["~/.aws/credentials"]

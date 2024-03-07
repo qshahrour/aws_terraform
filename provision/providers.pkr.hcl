@@ -10,7 +10,7 @@
     #region                      = var.region
     #shared_credentials_files    = ["~/.aws/credentials"]
     #profile                     = "default"
-}
+#}
 
 data "aws_vpc" "default" {
     default = var.vpc_id == null ? true : false
