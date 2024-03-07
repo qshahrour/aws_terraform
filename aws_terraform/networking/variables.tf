@@ -89,6 +89,7 @@ variable "vpc_dmz_cidr" {
 
 variable "rtb" {
     description   =   "Default Route Table ID"
+    type          = string 
     default       =   "rtb-01bcf1c28f79555a9"
 } 
 variable "" {
@@ -152,20 +153,13 @@ resource "aws_vpc" "dmz" {
   cidr_block = "${var.vpc_name}"
 }
 
-variable "test_map" {
+variable "map" {
     type = map(string)
     default = {
         Name = "Juan"
         LastName = "Perez"
     }
 }
-
-
-
-#variable "data-sg" {
-#    description =   "value"
-#    default     =   ""
-#}   
 
 variable "security_group_id" {
   description   =   "The ID of the security group to which we should add the Consul security group rules"
@@ -282,3 +276,7 @@ output "x_workspace_name" {
     value     = terraform.workspace
 }
 
+
+variable "public_subnets_cidr" {
+    
+}
