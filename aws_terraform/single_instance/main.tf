@@ -175,7 +175,7 @@ locals {
 
 # Networking
 # ----------------------------
-resource "aws_vpc" "vpc01" {
+resource "aws_vpc" "main_vpc" {
     cidr_block                = var.vpc_cidr
     enable_dns_support        = true
     enable_dns_hostnames      = true
@@ -187,12 +187,12 @@ resource "aws_vpc" "vpc01" {
 #   Subnet: public subnets
 resource "aws_subnet" "sn" {
     count                   = length(var.public_subnets_cidr)
-    vpc_id                  = aws_vpc.vpc01.id
+    vpc_id                  = aws_vpc.vpc.id
     cidr_block              = var.public_subnets_cidr[count.index]
     map_public_ip_on_launch = true
     availability_zone       = var.public_azs[count.index]
     tags = {
-        Name = format("%s%s", var.sn_name_prefix, count.index)
+        Name = format("%s%s", var.name_prefix, count.index)
     }
 }
 
@@ -205,18 +205,18 @@ resource "aws_internet_gateway" "ig01" {
 }
 
 #   Routing table
-resource "aws_route_table" "rt01" {
+resource "aws_route_table" "rtb" {
     vpc_id = aws_vpc.vpc_name.id
     route {
         cidr_block = "0.0.0.0/0"
-        gateway_id = aws_internet_gateway.ugw.id
+        gateway_id = aws_internet_gateway.igw.id
     }
     tags = {
         Name = var.rtb
     }
 }
 
-resource "aws_route_table_association" "rta01" {
+resource "aws_route_table_association" "rta" {
     count          = length(var.public_subnets_cidr)
     subnet_id      = aws_subnet.subnet[count.index].id
     route_table_id = aws_route_table.rt01.id
@@ -224,11 +224,11 @@ resource "aws_route_table_association" "rta01" {
 
 #   Security Group
 resource "aws_security_group" "security_group_id" {
-    vpc_id = aws_vpc.vpc01.id
+    vpc_id = aws_vpc.main_vpc.id
     name   = var.security_group_id
 
     dynamic "ingress" {
-        for_each = var.sg01_ingress
+        for_each = var.sgingress
         content {
             description = ingress.value.description
             from_port   = ingress.value.from_port
@@ -249,12 +249,12 @@ resource "aws_security_group" "security_group_id" {
 
 # Instances
 # ----------------------------
-resource "aws_ebs_volume" "vol" {
+resource "aws_ebs_volume" "volumr" {
     count             = length(var.public_azs)
     availability_zone = var.public_azs[count.index]
         size              = var.ebs_size
     tags = {
-        Name = format("%s%s", "vol-tf-", count.index)
+        Name = format("%s%s", "vol-tf-", acount.index)
     }
 }
 

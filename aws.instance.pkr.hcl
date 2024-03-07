@@ -1,14 +1,9 @@
 # Data Source File for building ec2 template
 
 
-
-
-
 locals {
     creation_date = formatdate("YYYY-MM-DD-hhmm", timestamp())
 }
-
-
 
 source "amazon-ebs" "core" {    
     ami_name                = local.vm_name

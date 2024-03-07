@@ -3,26 +3,26 @@
 # ==============================
 
 
-packer {
-  required_plugins {
-    amazon = {
-      version = ">= 0.0.1"
-      source  = "github.com/hashicorp/amazon"
-    }
-  }
+
+#provider "aws" {
+
+    #source                      = source.amazon-ebs.zabbix
+    #region                      = var.region
+    #shared_credentials_files    = ["~/.aws/credentials"]
+    #profile                     = "default"
 }
 
-#data "aws_vpc" "default" {
-#    default = var.vpc_id == null ? true : false
-#    id      = var.vpc_id
-#}
+data "aws_vpc" "default" {
+    default = var.vpc_id == null ? true : false
+    id      = var.vpc_id
+}
 
-#data "aws_subnet_ids" "default" {
-#    vpc_id = data.aws_vpc.default.id
-#}
+data "aws_subnet_ids" "default" {
+    vpc_id = data.aws_vpc.default.id
+}
 
-#data "aws_region" "current" {
-#}
+data "aws_region" "current" {
+}
 
 data "amazon-ami" "current" {
     filters = {
@@ -35,53 +35,54 @@ data "amazon-ami" "current" {
     #imds_support    = "v2.0"
 }
 
-
-source "amazon-ebs" "zabbix" {
-    ami_name                    = var.ami_name
-    instance_type               = var.instance_type
-    region                      = var.region
-    ssh_username                = var.ssh_username
-    ssh_agent_auth              = false
-    enable_unlimited_credits    = true
-    temporary_key_pair_type     = "~/.ssh/id_rsa"
-    # ami_name                  = "%s"
-    skip_create_ami             = true
-    launch_block_device_mappings {
-        device_name           = "/dev/sda1"
-        volume_size           = "100"
-        volume_type           = "gp3"
-        delete_on_termination = true
-        encrypted             = false
-    }
-
-    source_ami_filter {
-        filters = {
-            name                =   "ubuntu/images/*ubuntu-focal-20.04-amd64-server-*"
-            root-device-type    =   "ebs" 
-            virtualization-type =   "hvm"
-        }        
-        #owners          =  "637423636753"
-    }   
-    #temporary_iam_instance_profile_policy_document {
-        #Version = "2012-10-17"
-        #Statement { 
-        #    [
-        #        "Action"    =   ["*"]
-        #        "Effect"    =   "Allow"
-        #        "Resource"  =   ["*"]
-         #   ]
-        #}
-   # }
-    
-    
-}
-locals { creation_date = formatdate("YYYY-MM-DD-hhmm", timestamp()) }
-locals { timestamp = regex_replace(timestamp(), "[- TZ:]", "") }
-
 build {
     sources = [
         "source.amazon-ebs.zabbix"
     ]
+
+    source "amazon-ebs" "zabbix" {
+        ami_name                    = var.ami_name
+        instance_type               = var.instance_type
+        region                      = var.region
+        ssh_username                = var.ssh_username
+        ssh_agent_auth              = false
+        enable_unlimited_credits    = true
+        temporary_key_pair_type     = "~/.ssh/id_rsa"
+        # ami_name                  = "%s"
+        skip_create_ami             = true
+        launch_block_device_mappings {
+            device_name           = "/dev/sda1"
+            volume_size           = "100"
+            volume_type           = "gp3"
+            delete_on_termination = true
+            encrypted             = false
+        }
+
+        #owners  =  637423636753
+
+        source_ami_filter {
+            filters = {
+                name                =   "ubuntu/images/*ubuntu-focal-20.04-amd64-server-*"
+                root-device-type    =   "ebs" 
+                virtualization-type =   "hvm"
+            }        
+            owners          =  "637423636753"
+        }   
+        #temporary_iam_instance_profile_policy_document {
+            #Version = "2012-10-17"
+            #Statement { 
+            #    [
+            #        "Action"    =   ["*"]
+            #        "Effect"    =   "Allow"
+            #        "Resource"  =   ["*"]
+            #   ]
+            #}
+        # }
+    }
+
+    locals { creation_date = formatdate("YYYY-MM-DD-hhmm", timestamp()) }
+    locals { timestamp = regex_replace(timestamp(), "[- TZ:]", "") }
+
     provisioner "shell" {
         inline = [
             "echo Installing Docker",
@@ -122,3 +123,4 @@ build {
     
     }
 }
+

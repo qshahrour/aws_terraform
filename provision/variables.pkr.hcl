@@ -39,11 +39,11 @@ variable "ubuntu_version" {
     default = "ubuntu-focal-20.04-amd64-server"
 }
 
-#variable "ami" {
-#    type    = string
-#    default = "ami-04dfd853d88e818e8"
+variable "ami" {
+    type    = string
+    default = "ami-04dfd853d88e818e8"
 ###       error_message = "The image_id value must be a valid AMI ID, starting with \"ami-\"."    
- #   }
+}
 #}
 
 variable "ssh_username" {
@@ -53,19 +53,19 @@ variable "ssh_username" {
 
 
 
-variable "aws_profile" {
+variable "profile" {
   type      =   string
   default   =   "SysAdmin+Networking-637423636753"
 }
 
 variable "ssh_key_name" {
-  description = "The name of an EC2 Key Pair that can be used to SSH to the EC2 Instances in this cluster. Set to an empty string to not associate a Key Pair."
+  description = "Key Pair."
   type        = string
   default     = "~/.ssh/id_rsa"
 }
 
 variable "vpc_id" {
-  description = "The ID of the VPC in which the nodes will be deployed.  Uses default VPC if not supplied."
+  description = "The ID of the VPC"
   type        = string
   default     = null
 }

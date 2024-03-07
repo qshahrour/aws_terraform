@@ -1,7 +1,7 @@
 resource "aws_eip" "my-eip" {
-  count            = var.mycount
+  count            = var.acount
   public_ipv4_pool = "amazon"
   tags             = {}
-  domain = "vpc"
+  domain            = "main_vpc"
   timeouts {}
 }

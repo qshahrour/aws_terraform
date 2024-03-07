@@ -1,5 +1,5 @@
-resource "aws_security_group" "mysg" {
-  count       = var.mycount
+resource "aws_security_group" "sg" {
+  count       = var.acount
   description = "SG-inbound"
-  vpc_id      = aws_vpc.VPC[count.index].id
+  vpc_id      = aws_vpc.main_vpc[acount.index].id
 }

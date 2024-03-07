@@ -1,4 +1,4 @@
-variable "mycount" {
+variable "acount" {
   default = 1
 }
 
@@ -16,7 +16,10 @@ variable "aws_cidr" {
   }
 }
 
-
+variable "region" {
+  type = string
+  default = "eu-central-1"
+}
 
 
 

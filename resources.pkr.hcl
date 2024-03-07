@@ -27,7 +27,7 @@ output "eip_ip_address" {
 }
 
 # Networking
-resource "aws_vpc" "Infra_VPC_Frankfurt" {
+resource "aws_vpc" "" {
   cidr_block           = "10.100.10.0/24"
   enable_dns_support   = true
   enable_dns_hostnames = true
