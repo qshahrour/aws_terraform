@@ -2,79 +2,84 @@
 ##  Variables Definetion  ##
 
 variable "Environment" {
-  type = list(string)
-  default     =   [ "dev" ]
+  type            = list(string)
+  default         =   [ "dev" ]
 }
 
 variable "region" {
-    description   =   "Default Region for the Default Profile"
-    default       =   "eu-central-1" 
+    description   = "Default Region for the Default Profile"
+    type          = list(string)
+    default       = "eu-central-1" 
 }
 
 
 # AWS credentials profile stored in ~./aws/credentials
 variable "profile" {
-    description   =   "Main Profile per Account"
-    default       =   "default"   
+    description   = "Main Profile per Account"
+    type          = string 
+    default       = "default"   
 }
 
 variable "subnet" {
-    description   =   "Zone b Subnet"
-    default       =   "subnet-06299b6361c2110af"
+    description   = "Zone b Subnet"
+    default       = "subnet-06299b6361c2110af"
 }
 
-variable "ec2_key_name" {
-    description   =   "Zone a subnet"
-    default       =   ""
+variable "key_name" {
+    description   = "Zone a subnet"
+    default       = ""
 }  
 
 variable "enable_nat_gateway" {
-  description   = ""
+  description   = "NAT Gateway"
+  type          = bool 
   default       = false
 }
 
 variable "enable_vpn_gateway" {
-  description   = ""
+  description   = "VPN Gateway"
+  type          = bool
   default       = false
 }
 
 variable "private_subnet_tags" {
-  description     =   "Additional tags for the public route tables"
-  type            =   map(string)
-  default         =   {}
+  description     = "Additional tags for the public route tables"
+  type            = map(string)
+  default         = {}
 }
 
 variable "vpc_id" { 
   description       =   "vpic id to create the cluster"
-  type = string
+  type              = string
 }
 
 variable "vpc_name" {
-    description     =   "Frankfor Region VPC Name"
-    #default        =   "vpc-0d924ecc9c8e05b86"
-    default         =   "vpc.frank.1" 
+    description     = "Frankfor Region VPC Name"
+    #default        = "vpc-0d924ecc9c8e05b86"
+    type            = string
+    default         = "vpc.frank.1" 
 }   
 
 variable "vpc_cidr" {
-    description     =   "value"
-    type            =   string
-    default         =   ""
+    description     = "value"
+    type            = string
+    default         = ""
 }   
 
 variable "cidr" {
-  description       =   "The IPv4 CIDR block for the VPC"
-  type              =   string
+  description       = "The IPv4 CIDR block for the VPC"
+  type              = string
 
 }
 
 variable "azs" {
-  description =   "A list of availability zones names or ids in the region"
-  type        =   list(string)
+  description = "A list of availability zones names or ids in the region"
+  type        = list(string)
 }
 
 variable "igw" {
-  description =   "value"
-  default     =   "igw-0cd5ec8d76546ffde"
+  description = "value"
+  default     = "igw-0cd5ec8d76546ffde"
 } 
 
 variable "instance_type" {

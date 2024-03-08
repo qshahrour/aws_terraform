@@ -9,7 +9,6 @@ terraform {
 
 provider "aws" {
     region        = var.region
-    profile       = var.profile
 }
 
 
@@ -24,5 +23,5 @@ output "instance_tags" {
 }
 
 output "alb_dns" {
-  value         = format("%s%s","http://",aws_lb.alb01.dns_name)
+  value         = format("%s%s","http://",aws_lb.alb.dns_name)
 }

@@ -1,6 +1,4 @@
 # Data Source File for building ec2 template
-
-
 locals {
     creation_date = formatdate("YYYY-MM-DD-hhmm", timestamp())
 }
@@ -26,8 +24,8 @@ source "amazon-ebs" "core" {
             root-device-type    = "ebs"
         }
 
-        # owners = ["amazon"]
-        most_recent = true
+        owners          = ["amazon"]
+        most_recent     = true
     }
 }
     #tags = {

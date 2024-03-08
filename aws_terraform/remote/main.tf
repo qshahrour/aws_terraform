@@ -2,15 +2,11 @@
 terraform {
   required_providers {
     aws = {
-      source = "hashicorp/aws"
-    }
-  }
-}
-
-provider "aws" {
-  region      = var.region
-  default_tags {
-    tags    = var.default_tags
+      sources = [
+        "hashicorp/aws",
+        "../networking"
+      ]
+    }#region          = var.aws_region
   }
 }
 
@@ -24,19 +20,20 @@ locals {
 }
 
 module "vpc" {
-  source                = "./networking"
-  version               = "3.2.0"
-  # insert the 19 required variables here
-  name                  = var.vpc_name
-  cidr                  = var.vpc_cidr
+    source                = "github.com/qshahrour/packer_module"
+    version               = "3.2.0"
+    # insert the 19 required variables here
+    name                  = var.vpc_name
+    cidr                  = var.vpc_cidr
 
-  azs                   = var.azs
-  private_subnets       = var.private_subnets
-  public_subnets        = var.public_subnets
+    azs                   = var.azs
+    private_subnets       = var.private_subnets
+    public_subnets        = var.public_subnets
 
-  enable_nat_gateway    = var.enable_nat_gateway
-  enable_vpn_gateway    = var.enable_vpn_gateway
+    enable_nat_gateway    = var.enable_nat_gateway
+    enable_vpn_gateway    = var.enable_vpn_gateway
 }
+
 module "sg" {
   source        = "terraform-aws-modules/security-group/aws//modules/http-80"
   version       = "4.3.0"

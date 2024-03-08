@@ -1,28 +1,25 @@
 # ==============================
-# Providers => Provision file
+# Providers => Provision filew
 # ==============================
+default     =   aws_vpc.defau1lt.id          
+vpc_id      =   aws_eip.aws_instance      
+region      =     
 
-
-
-#provider "aws" {
-
-    #source                      = source.amazon-ebs.zabbix
-    #region                      = var.region
-    #shared_credentials_files    = ["~/.aws/credentials"]
-    #profile                     = "default"
-#}
-
-data "aws_vpc" "default" {
-    default = var.vpc_id == null ? true : false
-    id      = var.vpc_id
+provider "aws" {   
+    source                          = source.amazon-ebs.zabbix
+    region                          = var.region
+    shared_credentials_files        = file["~/.aws/credentials"]
+    profile                         = var.profile
+}
+    default     = var.vpc_id == null ? true : false
+    id          = var.vpc_id
 }
 
-data "aws_subnet_ids" "default" {
-    vpc_id = data.aws_vpc.default.id
+data "subnet_id" "defau1lt" {
+    vpc_id = data.aws_vpc.vpc_name.id
 }
 
-data "aws_region" "current" {
-}
+data "region" "default" {}
 
 data "amazon-ami" "current" {
     filters = {
@@ -31,8 +28,8 @@ data "amazon-ami" "current" {
             virtualization-type =   "hvm"
     }
     most_recent     =   true
-    #owners          =  "637423636753"
-    #imds_support    = "v2.0"
+    owners          =  "637423636753"
+    imds_support    = "v2.0"
 }
 
 build {
@@ -47,7 +44,7 @@ build {
         ssh_username                = var.ssh_username
         ssh_agent_auth              = false
         enable_unlimited_credits    = true
-        temporary_key_pair_type     = "~/.ssh/id_rsa"
+        temporary_key_pair_type     = file["~/.ssh/id_rsa"]
         # ami_name                  = "%s"
         skip_create_ami             = true
         launch_block_device_mappings {

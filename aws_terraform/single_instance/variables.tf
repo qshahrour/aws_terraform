@@ -28,7 +28,7 @@ variable "Environment" {
     type            =   string
     default         =   "dev"
 }   
-variable "profile" {
+variable "subnet" {
     description     =   "AWS User Profile"
     type            =   string
     default         =   "default"
@@ -75,14 +75,14 @@ variable "igw" {
 }
 
 
-variable "public_subnets_cidr" {
+variable "public_subnet_cidr" {
     description = "Public CIDR"
     type        = string
     default     = "value"
 }
 
 
-variable "public_subnets" {
+variable "public_subnet" {
     description   =   "Public Subnets"
     type          =   map(string)
     default       =   {}
@@ -106,7 +106,7 @@ variable "tags" {
     default       =   {}
 }
 
-variable    "default_instance_os_tag" {
+variable "default_instance_os_tag" {
 
 }
 
@@ -117,7 +117,8 @@ variable "instance_type" {
 
 
 variable "name_prefix" {
-    
+    type        = string 
+    default     = []
 }
 
 

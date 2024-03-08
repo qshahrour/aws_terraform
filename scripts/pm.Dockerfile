@@ -1,4 +1,4 @@
-
+FROM baseImage
 
 
 ENV NODE_ENV=
