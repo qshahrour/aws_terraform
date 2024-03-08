@@ -1,10 +1,8 @@
 #!/bin/bash
-
 # Allow toggling components to install and update based off flags
-
+# ==========
 STATE_OK=0
 STATE_WARNING=1
-# ==========
 STATE_CRITICAL=2
 STATE_UNKNOWN=3
 

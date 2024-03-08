@@ -24,7 +24,7 @@ usermod -a -G docker ubuntu
   # Install latest Docker Engine
   if [ $UPDATE_DOCKER -eq 1 ]; then
     echo "$NOW_TIME"
-    printf "%b\n "${BLDCYN}[ Installing Docker Engine on ${HOSTNAME^^} ]${TXTRST}\n"
+    printf "%b\n "${BLDCYN}[ Installing Docker Engine on ${HOSTNAME^^} ]${TXTRST}"
     echo """
     apt-get update \
       && apt-get install -y apt-transport-https ca-certificates \
