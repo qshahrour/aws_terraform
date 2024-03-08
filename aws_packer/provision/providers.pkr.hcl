@@ -1,25 +1,27 @@
 # ==============================
 # Providers => Provision filew
 # ==============================
-default     =   aws_vpc.defau1lt.id          
-vpc_id      =   aws_eip.aws_instance      
-region      =     
+#default     =   aws_vpc.default.id          
+#vpc_id      =   aws_eip.aws_instance      
+#region      =     
 
-provider "aws" {   
-    source                          = source.amazon-ebs.zabbix
-    region                          = var.region
-    shared_credentials_files        = file["~/.aws/credentials"]
-    profile                         = var.profile
-}
-    default     = var.vpc_id == null ? true : false
+#provider "aws" {   
+#    source                          = source.amazon-ebs.zabbix
+#    region                          = `var.region
+#    profile                         = var.profile
+#}
+#    default     = var.vpc_id == null ? true : false
     id          = var.vpc_id
-}
+#}
 
-data "subnet_id" "defau1lt" {
-    vpc_id = data.aws_vpc.vpc_name.id
-}
+#data "subnet_id" "defau1lt" {
+#    vpc_id = data.aws_vpc.vpc_name.id
+#}
 
-data "region" "default" {}
+#data "region" "default" {}
+#data "profile" "ingot" {
+#    profile     =   "SysAdmin+Networking-637423636753"
+#}
 
 data "amazon-ami" "current" {
     filters = {
@@ -28,7 +30,7 @@ data "amazon-ami" "current" {
             virtualization-type =   "hvm"
     }
     most_recent     =   true
-    owners          =  "637423636753"
+    owners        =  "637423636753"
     imds_support    = "v2.0"
 }
 
@@ -44,7 +46,7 @@ build {
         ssh_username                = var.ssh_username
         ssh_agent_auth              = false
         enable_unlimited_credits    = true
-        temporary_key_pair_type     = file["~/.ssh/id_rsa"]
+        temporary_key_pair_type     = ["~/.ssh/id_rsa"]
         # ami_name                  = "%s"
         skip_create_ami             = true
         launch_block_device_mappings {
@@ -63,7 +65,7 @@ build {
                 root-device-type    =   "ebs" 
                 virtualization-type =   "hvm"
             }        
-            owners          =  "637423636753"
+            owners  =  "amazon"
         }   
         #temporary_iam_instance_profile_policy_document {
             #Version = "2012-10-17"
@@ -111,13 +113,13 @@ build {
     provisioner "shell" {
         environment_vars  = [ "HOME_DIR=/home/ubuntu" ]
         execute_command   = "echo 'ubuntu' | {{.Vars}} sudo -S -E sh -eux '{{.Path}}'"
-        expect_disconnect = true
+        
         // fileset will list files in etc/scripts sorted in an alphanumerical way.
         scripts           = fileset("./", "docker/install_docker.sh")
+        expect_disconnect = true
     }
     post-processor "shell-local" {
         inline = ["docker-compose.yaml up -d build > ${build.name}.txt"]
-    
     }
 }
 
