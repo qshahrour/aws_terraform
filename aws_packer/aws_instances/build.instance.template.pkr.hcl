@@ -42,7 +42,7 @@ variable "standardCPUCredit" {
 #communicator    = local.communicator.type
 #ssh_username    = local.communicator.username
 #ssh_password    = local.communicator.password
-#ssh_timeout     = local.communicator.timeout
+#ssh_timeout     = local.communicator.timeout           
 source "amazon-ebs" "standard" {
 
     ami_name                        = "ubuntu-docker"
