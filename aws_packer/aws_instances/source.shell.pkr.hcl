@@ -33,5 +33,90 @@ locals {
 }
 
 source "null" "standard" {
-    communicator = "none"
+    communicator = "ssh"
+}
+
+
+build {
+    name = "native-restore"
+    sources = ["null.core"]
+
+    provisioner "shell-local" {
+        inline = [
+            "chef install --chef-license accept-silent",
+            "chef update --attributes",
+            "chef export ${local.artifacts_directory}/chef --force"
+        ]
+    }
+}
+
+local = {
+    
+    chef_destination         = "/var/tmp/packer-build/chef/"
+    chef_max_retries         = 10
+    chef_start_retry_timeout = "30m"
+    chef_attributes          = lookup(local.image_options.native, "chef_attributes", "")
+    chef_keep                = lookup(local.image_options.native, "chef_keep", "false")
+}
+
+build {
+    name = "native-build"
+    sources = local.native_build ? (local.native_iso ? compact([lookup(local.native_iso_sources, local.image_provider, "")]) : compact([lookup(local.native_import_sources, local.image_provider, "")])) : ["null.core"]
+
+    provisioner "shell" {
+        script            = "${path.root}/chef/initialize.sh"
+    }
+
+    provisioner "file" {
+        source      = "${local.artifacts_directory}/chef/"
+        destination = local.chef_destination
+    }
+
+    provisioner "file" {
+        sources     = fileset(path.cwd, "attributes.*.json")
+        destination = local.chef_destination
+    } 
+
+    provisioner "shell" {
+        script              = "${path.root}/chef/apply.sh"
+        max_retries         = local.chef_max_retries
+        pause_before        = "90s"
+        start_retry_timeout = local.chef_start_retry_timeout
+
+        env = {
+            CHEF_ATTRIBUTES = local.chef_attributes
+        }
+    }
+
+    provisioner "shell" {
+        script              = "${path.root}/chef/cleanup.sh"
+        expect_disconnect   = true
+
+        env = {
+            CHEF_KEEP       = local.chef_keep
+        }
+    }
+
+    post-processor "manifest" {
+        output              = "${local.artifacts_directory}/manifest.json"
+    }
+
+    post-processor "checksum" {
+        checksum_types      = ["sha256"]
+        output              = "${local.artifacts_directory}/checksum.{{ .ChecksumType }}"
+    }
+}
+
+build {
+    name = "native-test"
+    sources = ["null.core"]
+}
+
+build {
+    name = "native-publish"
+
+
+
+
+    sources = ["null.core"]
 }

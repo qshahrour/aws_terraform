@@ -6,8 +6,10 @@ sudo apt update \
         curl \
         gnupg \
         lsb-release \ 
+        build-essential \
+        software-properties-common \
+        apt-transport-https \
         apt-utils \
-        build-essential\
         openssl \
         git \
         wget \

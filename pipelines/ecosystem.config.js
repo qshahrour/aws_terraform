@@ -10,13 +10,15 @@ module.exports = {
     deploy: {
         production: {
             name: process.env.NUXT_ENV_PROJECT_NAME,
-            exec_mode: "cluster",
-            instances: "max", // Or a number of instances
-            cwd: '/var/www/ingotbrokers-website/',
-            args: "start",
-            max_memory_restart: "500M",
-            log_date_format: "YYYY-MM-DD HH:mm Z",
-            time: true,
+            
+            "instances": "max", // Or a number of instances
+            "cwd": '/var/www/ingotbrokers-website/',
+            "script": "./node_modules/nuxt/bin/nuxt.js",
+            "args": "start",
+            "exec_mode": "cluster",
+            "max_memory_restart": "500M",
+            "log_date_format": "YYYY-MM-DD HH:mm Z",
+            "time": true,
 
             "user": "ubuntu",
             "host": ["192.168.0.13", "192.168.0.14", "192.168.0.15"],
@@ -56,3 +58,35 @@ module.exports = {
     ; Usage:
 ; git @deployment: username / anyrepo.git
     ; This is for cloning any repo that uses that IdentityFile.
+
+
+    require("dotenv").config();
+
+module.exports = {
+    apps: [
+        {
+            name: process.env.NUXT_ENV_PROJECT_NAME,
+            exec_mode: "cluster",
+            instances: "max", // Or a number of instances
+            script: "./node_modules/nuxt/bin/nuxt.js",
+            args: "start",
+            // cwd: "./current",
+            windowsHide: true,
+            max_memory_restart: "200M",
+            log_date_format: "YYYY-MM-DD HH:mm Z",
+            time: true,
+        },
+    ],
+
+    // Deployment Configuration
+    deploy: {
+        production: {
+            "user": "ubuntu",
+            "host": ["3.75.148.238"],
+            "ref": "release/release",
+            "repo": "git@bitbucket.org:sigmaltd/ingotbrokers-website.git",
+            "path": "/var/www/ingotbrokers-website",
+            "post-deploy": "npm install"
+        }
+    }
+};

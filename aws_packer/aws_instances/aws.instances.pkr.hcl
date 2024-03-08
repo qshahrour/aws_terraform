@@ -3,11 +3,10 @@
 #=======================================
 
 source "amazon-ebs" "standard" {
-    ami_name              = local.vm_name
 
+    ami_name              = local.vm_name
     spot_price            = ["auto"]
     spot_instance_types   = ["t3.xlarge"]
-
     ebs_optimized         = true
 
     launch_block_device_mappings {
@@ -19,20 +18,18 @@ source "amazon-ebs" "standard" {
 
     source_ami_filter {
         filters = {
-        // name                = "Windows_Server-2022-English-Full-Base-*"
+            // name                = "Windows_Server-2022-English-Full-Base-*"
             virtualization-type = "hvm"
             root-device-type    = "ebs"
         }
 
         owners = ["amazon"]
-
         most_recent = true
     }
 
     // user_data = "<powershell>\r\n${file("${path.root}/boot/autounattend-first-logon.ps1")}\r\n</powershell>"
-
     tags = {
-        "Name"   = local.vm_name
+        "Name"   = local.ami_name
         "packer" = ""
     }
 

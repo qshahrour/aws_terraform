@@ -1,23 +1,38 @@
 version: '3.5'
 services:
-  zabbix-server:
-    container_name: zabbix-server
-    image: zabbix/zabbix-server-mysql:ubuntu-6.4.11
+  zabbix:
+    hostname: zabbix
+    container_name: zabbix
+    image: zabbix/zabbix-server-mysql:ubuntu-6.4-latest
+    restart: always
+    depends_on:
+      - mysql
     ports:
       - "10051:10051"
-    restart: always
     volumes:
-      - "./zabbix/alertscripts:/usr/lib/zabbix/alertscripts" 
-    env_file:
-      - ./zabbix/.env_srv
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/etc/timezone:/etc/timezone:ro"
+      #- "./zabbix/alertscripts:/usr/lib/zabbix/alertscripts" 
     links:
-      - mysql-server
+      - mysql
     environment:
-      - DB_SERVER_HOST=mysql-server
-      - MYSQL_USER=zabbix
-      - MYSQL_PASSWORD=Zabbix@1234
-    depends_on:
-      - mysql-server
+      - ZBX_HOSTNAME=localhost
+      - MYSQL_USER=root
+      - DB_SERVER_HOST=mysql 
+      - MYSQL_DATABASE=zabbix
+      - MYSQL_PASSWORD=Zabbix@2024
+      - ZBX_ALLOWUNSUPPORTEDDBVERSIONS=1
+    tmpfs: /tmp
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 20000
+        hard: 40000
+    deploy:
+      replicas: 1
+    cpus: 0.5
+    mem_limit: 1024M
+    mem_reservation: 512M
     stop_grace_period: 5s
     sysctls:
       - net.ipv4.ip_local_port_range=1024 65000
@@ -25,55 +40,73 @@ services:
       - net.ipv4.conf.all.secure_redirects=0
       - net.ipv4.conf.all.send_redirects=0
 
-
-
-  mysql-server:
-    container_name: mysql-server
-    image: mysql:8.0-oracle
+  mysql:
+    hostname: mysql
+    container_name: mysql
+    image: mysql:latest #8.0-oracle
     init: true
     restart: always
-    command: --default-authentication-plugin=mysql_native_password
-    command: --skip-grant-tables
-    command: --skip-networking
-    command: --ignore-db-dir=lost+found
-    command: --initialize-insecure
-    #command: --disable-partition-engine-check
-    environment:
-      - MYSQL_USER=zabbix
-      - MYSQL_ROOT_HOSTS=%
-      - MYSQL_DATABASE=zabbix
-      - MYSQL_PASSWORD=Zabbix@1234
-      - MYSQL_CHARSET=utf8mb4
-      - MYSQL_COLLATION=utf8mb4_general_ci
-      - MYSQL_ALLOW_EMPTY_PASSWORD=true
-    tmpfs: /tmp
     ports:
       - "3306:3306"
     volumes:
-       - "./data:/var/lib/mysql/zabbix"
-    env_file:
-      - ./zabbix/.env_db_mysql
+      - "/etc/timezone:/etc/timezone:ro"
+      - "./mysql:/var/lib/mysql:rw"
+      - "./zabbix/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql:ro"
+    environment:
+      - MYSQL_USER=root
+      - MYSQL_DATABASE=zabbix
+      - ZBX_HOSTNAME=zabbix
+      - MYSQL_ROOT_HOSTS=%
+      - MYSQL_CHARSET=utf8mb4
+      - MYSQL_ROOT_PASSWORD=Zabbix@2024
+      - MYSQL_COLLATION=utf8mb4_general_ci
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+    tmpfs: /tmp
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 20000
+        hard: 40000
+    deploy:
+      replicas: 1
+    cpus: 0.5
+    mem_limit: 1024M
+    mem_reservation: 512M
+    
     stop_grace_period: 1m
 
 
-  zabbix-frontend:
-    container_name: zabbix-frontend
+  nginx:
+    hostname: nginx
+    container_name: nginx
     image: zabbix/zabbix-web-nginx-mysql:ubuntu-6.4.11
     restart: always
-    links: 
-      - mysql-server
+    depends_on:
+      - mysql
     ports:
-      - '80:8080'
-      - '443:8443'
-    hostname: zabbix-frontend
+      - "80:80"
+      - "443:443"
     environment:
+      - MYSQL_USER=root
+      - ZBX_HOSTNAME=zabbix
       - PHP_TZ="Europe/London"
-      - DB_SERVER_HOST=mysql-server
+      - DB_SERVER_HOST=mysql
       - MYSQL_DATABASE=zabbix
-      - MYSQL_USER=zabbix
-      - MYSQL_PASSWORD=Zabbix@1234
-    env_file:
-      - ./zabbix/.env_web
+      - MYSQL_PASSWORD=Zabbix@2024
+      - ZBX_SERVER_HOST=zabbix
+    tmpfs: /tmp
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 20000
+        hard: 40000
+    deploy:
+      replicas: 1
+    cpus: 0.5
+    mem_limit: 1024M
+    mem_reservation: 512M
+    links: 
+      - mysql
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/"]
       interval: 10s
@@ -81,35 +114,39 @@ services:
       retries: 3
       start_period: 30s
     stop_grace_period: 10s
-    depends_on: 
-      - mysql-server
-      - zabbix-server
     sysctls:
       - net.core.somaxconn=65535
 
 
-#  zabbix-agent:
-#    container_name: zabbix-agent
-#    image: zabbix/zabbix-agent2:ubuntu-6.4.11
-#    user: root
-#   networks:
-#      - network-zabbix
-##    links:
- #     - zabbix-server
- #   restart: always
- #   #privileged: true
-  #  volumes:
-  #    - /var/run:/var/run
- # #3 ports:
- # 3 #   - '10050:10050'
- #3   3environment:
- #     - ZBX_HOSTNAME=Zabbix server
- #     - ZBX_SERVER_HOST=172.18.0.1
+#zabbix-agent:
+#container_name: zabbix-agent
+#image: zabbix/zabbix-agent2:ubuntu-6.4.11
+#user: root
+#networks:
+#- network-zabbix
+#links:
+#zabbix-server
+#restart: always
+#privileged: true
+#volumes:
+#- /var/run:/var/run
+#ports:
+#- '10050:10050'
+#environment:
+#-ZBX_HOSTNAME=Zabbix server
+#- ZBX_SERVER_HOST=172.18.0.1
 
-    #command: --init-command="SET @@SESSION.SQL_LOG_BIN=0;"
-     # - --init-command="SET @@SESSION.SQL_LOG_BIN=0;"
-     # - --character-set-server=utf8mb4.
-     #- --collation-server=utf8mb4_bin
-      #- MYSQL_USER=zabbix
-      #- MYSQL_ROOT_PASSWORD=carryontech
-      #- MYSQL_PASSWORD=carryontech
+#command:
+#--init-command="SET @@SESSION.SQL_LOG_BIN=0;"
+#--init-command="SET @@SESSION.SQL_LOG_BIN=0;"
+#--character-set-server=utf8mb4.
+#--collation-server=utf8mb4_bin
+#-MYSQL_USER=zabbix
+#-MYSQL_ROOT_PASSWORD=carryontech
+#-MYSQL_PASSWORD=carryontech
+#command: --default-authentication-plugin=mysql_native_password
+#command: --skip-grant-tables
+#command: --skip-networking
+#command: --ignore-db-dir=lost+found
+#command: --initialize-insecure
+#command: --disable-partition-engine-check

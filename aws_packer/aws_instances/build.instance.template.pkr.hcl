@@ -12,7 +12,6 @@ packer {
 variable "profile" {
     default     = "ingot"
 }
-
 variable "vpc_id" {
     default     = "vpc-06668cf85af082456"
 }
@@ -20,9 +19,9 @@ variable "subnet_id" {
     default     = "subnet-05bb983919aff8851"
 }
 
-#data "subnet_id" "defau1lt" {
-#    vpc_id = data.aws_vpc.vpc_id
-#}
+variable "subnet_id" {
+    vpc_id = data.aws_vpc.vpc_id
+}
 variable "ami_id" {
     default     = "ami-04dfd853d88e818e8"   
 }
@@ -44,13 +43,12 @@ variable "standardCPUCredit" {
 #ssh_username    = local.communicator.username
 #ssh_password    = local.communicator.password
 #ssh_timeout     = local.communicator.timeout
-
 source "amazon-ebs" "standard" {
 
     ami_name                        = "ubuntu-docker"
-    instance_type                   = "t3.xlarge"
+    instance_type                   = "${var.instance_type}"
     region                          = "${var.region}"
-    ssh_username                    = "ubuntu"
+    ssh_username                    = "${ssh_user}"
     ssh_agent_auth                  = "false"
     enable_unlimited_credits        = "true"
     #temporary_key_pair_type        = ["awskey"]  
@@ -69,8 +67,8 @@ source "amazon-ebs" "standard" {
             root-device-type        =   "ebs" 
             virtualization-type     =   "hvm"
         }        
-        most_recent             = true
-        owners                  =  ["099720109477"]
+        most_recent        = true
+        owners             =  ["099720109477"]
     }      
     #locals { timestamp = regex_replace(timestamp(), "[- TZ:]", "") }
 }
@@ -89,9 +87,11 @@ build {
             "sudo apt-get update"
         ]
     }
+
     post-processor "shell-local" {
         inline = ["bash ./scripts/install_deocker.sh > ${build.name}.txt"]
     }
+
     post-processor "shell-local" {
         inline = ["docker-compose.yaml up -d build > ${build.name}.txt"]
     }   
@@ -100,6 +100,7 @@ build {
     post-processor "shell-local" {
         inline = ["docker-compose.yaml up -d build > ${build.name}.txt"]
     }
+
     provisioner "shell" {
         inline = [
             "echo Installing Docker",
@@ -119,9 +120,11 @@ build {
             "echo Done Installing Docker Compose version"
         ]
     }
+
     provisioner "shell" {
         inline = ["TOKEN=`curl -s -X PUT \"http://169.254.169.254/latest/api/token\" -H \"X-aws-ec2-metadata-token-ttl-seconds: 21600\"` && curl -H \"X-aws-ec2-metadata-token: $TOKEN\" -s http://169.254.169.254/latest/meta-data/"]
     }
+
     provisioner "shell" {
         only = ["amazon-ebs.standard"]
         inline = [
