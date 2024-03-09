@@ -99,3 +99,5 @@ wp-config.php
 main.tf
 infex.html
 docker.tf
+
+*.sh
