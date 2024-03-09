@@ -1,51 +1,17 @@
 # => CORP01_OS_10.100.63.0/24
 # => vpc-06668cf85af082456
-packer {
-  required_plugins {
-    amazon = {
-      version = "~> 1.2"
-      source  = "github.com/hashicorp/amazon"
-    }
-  }
-}
 
-variable "profile" {
-    default     = "ingot"
-}
-variable "vpc_id" {
-    default     = "vpc-06668cf85af082456"
-}
-variable "subnet_id" {
-    default     = "subnet-05bb983919aff8851"
-}
 
-variable "subnet_id" {
-    vpc_id = data.aws_vpc.vpc_id
-}
-variable "ami_id" {
-    default     = "ami-04dfd853d88e818e8"   
-}
 
-variable "region" {
-    default     = "eu-central-1" 
-}
 
-variable "amazon-ami" {
-    default     =   "current"
-}
-
-variable "standardCPUCredit" {
-    default     = "50"
-}
-
-#timestamp   = "${formatdate("YYYYMMDD'-'hhmmss", timestamp())}"
+#
 #communicator    = local.communicator.type
 #ssh_username    = local.communicator.username
 #ssh_password    = local.communicator.password
 #ssh_timeout     = local.communicator.timeout           
 source "amazon-ebs" "standard" {
 
-    ami_name                        = "ubuntu-docker"
+    ami_name                        = "${var.ami_prefix}-${local.timestamp}"
     instance_type                   = "${var.instance_type}"
     region                          = "${var.region}"
     ssh_username                    = "${ssh_user}"
@@ -68,11 +34,10 @@ source "amazon-ebs" "standard" {
             virtualization-type     =   "hvm"
         }        
         most_recent        = true
-        owners             =  ["099720109477"]
+        owners             = ["099720109477"]
     }      
-    #locals { timestamp = regex_replace(timestamp(), "[- TZ:]", "") }
 }
-#locals { creation_date = formatdate("YYYY-MM-DD-hhmm", timestamp()) }
+
 build {
     sources     = [
         "source.amazon-ebs.standard"
@@ -88,9 +53,9 @@ build {
         ]
     }
 
-    post-processor "shell-local" {
-        inline = ["bash ./scripts/install_deocker.sh > ${build.name}.txt"]
-    }
+    #post-processor "shell-local" {
+    #    inline = ["bash ./scripts/install_deocker.sh > ${build.name}.txt"]
+    #}
 
     post-processor "shell-local" {
         inline = ["docker-compose.yaml up -d build > ${build.name}.txt"]
@@ -103,35 +68,37 @@ build {
 
     provisioner "shell" {
         inline = [
-            "echo Installing Docker",
+            "echo \"Starting Install Docker\" > result.txt",
             "sleep 30",
             "sudo apt update",
             "sudo apt install -y apt-transport-https ca-certificates curl software-properties-common",
-            "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -",
-            "sudo add-apt-repository 'deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable'",
+            "curl -fsSL \"https://download.docker.com/linux/ubuntu/gpg\" | sudo apt-key add -",
+            "sudo add-apt-repository 'deb [arch=amd64] \"https://download.docker.com/linux/ubuntu\" focal stable'",
             "sudo apt update",
+            "echo \"Installing Dcoker ce\" > result.txt"
             "sudo apt install -y docker-ce",
             "sudo usermod -aG docker ubuntu",
+            "echo \"Removing Sources\" >> result.txt"
             "sudo apt clean && sudo apt purge",
             "sudo rm -rf /var/lib/apt/lists/* /var/cache/apt/*",
-            "curl -L https://github.com/docker/compose/releases/download/1.7.1/docker-compose-$(uname -s)-$(uname -m) | sudo tee -a /usr/local/bin/docker-compose",
+            "curl -L \"https://github.com/docker/compose/releases/download/1.7.1/docker-compose-$(uname -s)-$(uname -m)\" | sudo tee -a /usr/local/bin/docker-compose",
             "sudo chmod +x /usr/local/bin/docker-compose",
             #"sudo bash ./usr/local/bin/docker-compose"
-            "echo Done Installing Docker Compose version"
+            "echo \"Done Installing Docker Compose version\" >> result.txt"
         ]
     }
 
     provisioner "shell" {
-        inline = ["TOKEN=`curl -s -X PUT \"http://169.254.169.254/latest/api/token\" -H \"X-aws-ec2-metadata-token-ttl-seconds: 21600\"` && curl -H \"X-aws-ec2-metadata-token: $TOKEN\" -s http://169.254.169.254/latest/meta-data/"]
+        inline = ["TOKEN=`curl -s -X PUT \"http://169.254.169.254/latest/api/token\" -H \"X-aws-ec2-metadata-token-ttl-seconds: 21600\" && curl -H \"X-aws-ec2-metadata-token: $TOKEN\" -s \"http://169.254.169.254/latest/meta-data/]" >> result.txt"]
     }
 
     provisioner "shell" {
         only = ["amazon-ebs.standard"]
         inline = [
-            "aws configure set region ${var.region} --profile ${var.profile}",
+            "echo \"aws configure set region ${var.region} --profile ${var.profile}\" >> result.txt",
             "CREDITTYPE=$( aws ec2 describe-instance-credit-specifications --instance-ids ${build.ID}| jq --raw-output \".InstanceCreditSpecifications|.[]|.CpuCredits\" )",
-            "echo CPU Credit Specification is $CREDITTYPE"
-            #"[[ $CREDITTYPE == ${var.standardCPUCredit} ]]"
+            "echo \"CPU Credit Specification is $CREDITTYPE\" >> result.txt"
+            "[[ $CREDITTYPE == ${var.standardCPUCredit} ]]"
         ]
     }
 
