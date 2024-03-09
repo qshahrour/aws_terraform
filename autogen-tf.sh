@@ -29,10 +29,10 @@ sudo service mysql restart
 # ==================
 export MYSQL_PWD=Rhsl$%2022
 # =================================
-mysql --user="root" -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'Rhsl$%2022';"#
+mysql --user="root" -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '';"#
 mysql --user="root" -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;"
-mysql --user="root" -e "CREATE USER 'qa'@'%' IDENTIFIED BY 'Rhsl$%2022';"
-mysql --user="root" -e "CREATE USER 'qa'@'%' IDENTIFIED BY 'Rhsl$%2022';"
+mysql --user="root" -e "CREATE USER 'qa'@'%' IDENTIFIED BY '';"
+mysql --user="root" -e "CREATE USER 'qa'@'%' IDENTIFIED BY '';"
 mysql --user="root" -e "GRANT ALL PRIVILEGES ON *.* TO 'qa'@'%' WITH GRANT OPTION;"
 mysql --user="root" -e "GRANT ALL ON *.* TO 'qa'@'%' WITH GRANT OPTION;"
 mysql --user="root" -e "FLUSH PRIVILEGES;"
