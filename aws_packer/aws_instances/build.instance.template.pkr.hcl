@@ -140,7 +140,7 @@ build {
     }
 
     provisioner "file" {
-        sources                         = fileset(path.cwd, "docker-compose.yaml")
+        sources                     = fileset(path.cwd, "docker-compose.yaml")
         destination                 = local.jammy_destination
     } 
 
@@ -151,24 +151,24 @@ build {
         jammy_start_retry_timeout   = local.jammy_start_retry_timeout
 
         env = {
-            JAMMY_ATTRIBUTES = local.jammy_attributes
+            JAMMY_ATTRIBUTES        = local.jammy_attributes
         }
     }
 
     post-processor "shell-local" {
-        inline = ["docker-compose.yaml up -d build > ${build.name}.txt"]
+        inline                      = ["docker-compose.yaml up -d build > ${build.name}.txt"]
     }
 
     provisioner "shell" {
-        inline = ["TOKEN=$( curl -s -X PUT \"http://169.254.169.254/latest/api/token\" -H \"X-aws-ec2-metadata-token-ttl-seconds: 21600\" && curl -H \"X-aws-ec2-metadata-token: $TOKEN\" -s \"http://169.254.169.254/latest/meta-data/\"] >> result.txt"]
+        inline                      = ["TOKEN=$( curl -s -X PUT \"http://169.254.169.254/latest/api/token\" -H \"X-aws-ec2-metadata-token-ttl-seconds: 21600\" && curl -H \"X-aws-ec2-metadata-token: $TOKEN\" -s \"http://169.254.169.254/latest/meta-data/\"] >> result.txt"]
     }
 
     post-processor "shell-local" {
-        inline = ["docker-compose.yaml up -d build > ${build.name}.txt"]
+        inline                      = ["docker-compose.yaml up -d build > ${build.name}.txt"]
     }
 
     provisioner "shell" {
-        only = ["amazon-ebs.standard"]
+        only                        = ["amazon-ebs.standard"]
         inline = [
             "echo \"aws configure set region ${var.region} --profile ${var.profile}\" >> result.txt",
             "CREDITTYPE=\"$( aws ec2 describe-instance-credit-specifications --instance-ids \"${build.ID}\" | jq --raw-output \".InstanceCreditSpecifications|.[]|.CpuCredits\" )\"",
