@@ -4,7 +4,7 @@
 
 source "amazon-ebs" "standard" {
 
-    ami_name              = local.vm_name
+    ami_name              = "${var.ami_prefix}-${local.timestamp}"
     spot_price            = ["auto"]
     spot_instance_types   = ["t3.xlarge"]
     ebs_optimized         = true
@@ -30,7 +30,7 @@ source "amazon-ebs" "standard" {
     // user_data = "<powershell>\r\n${file("${path.root}/boot/autounattend-first-logon.ps1")}\r\n</powershell>"
     tags = {
         "Name"   = local.ami_name
-        "packer" = ""
+        "packer" = "aws"
     }
 
     run_tags = {

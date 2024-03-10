@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# shellcheck disable=SC2088
-# shellcheck disable=SC2164
+## shellcheck disable=SC2088
+## shellcheck disable=SC2164
 pushd "~/environment/aws2tf" &>/dev/null
 
 TGIDS=$( aws ec2 describe-transit-gateways --query "TransitGateways[].TransitGatewayId" | jq .[] )
@@ -21,15 +21,17 @@ done
 ./aws_tf.sh -t inst -c yes
 
 
-echo "default_password_lifetime = 0" >> sudo tee -a /etc/mysql/mysql.conf.d/mysqld.cnf
+echo "default_password_lifetime = 30"  >>  /etc/mysql/mysql.conf.d/mysqld.cnf
 # ==================
-# Configure MySQL Remote Access
-sudo sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/mysql.conf.d/mysqld.cnf
-sudo service mysql restart
+## Configure MySQL Remote Access ##
+
+sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/mysql.conf.d/mysqld.cnf
+service mysql restart
 # ==================
-export MYSQL_PWD=Rhsl$%2022
+export MYSQL_PWD=YPE9ftktM@2024
+mysql -uroot -p'YPE9ftktM@2024' -A
 # =================================
-mysql --user="root" -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '';"#
+mysql --user="root" -p -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY ''Rhsl$%2022";#
 mysql --user="root" -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;"
 mysql --user="root" -e "CREATE USER 'qa'@'%' IDENTIFIED BY '';"
 mysql --user="root" -e "CREATE USER 'qa'@'%' IDENTIFIED BY '';"

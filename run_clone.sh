@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # PURPOSE:
 # This script clones the rrepository to the target
-## Shell Opts ----------------------------------------------------------------
+# Shell Opts ----------------------------------------------------------------
 set -xeu
 
 ## Vars ----------------------------------------------------------------------
 
-WORKING_DIR="$( readlink -f $( dirname $0 ) )"
+WORKING_DIR=$( readlink -f $( dirname $0 ) )
 PROJECT_NAME="$( sed -n 's|^project=openstack/\(.*\).git$|\1|p' $( pwd )/.gitreview )"
 
 
@@ -17,7 +17,7 @@ TESTS_CLONE_LOCATION=
 # Use .gitreview as the key to determine the appropriate
 # branch to clone for tests.
 TESTING_BRANCH=$( awk -F'=' '/defaultbranch/ {print $2}' "${WORKING_DIR}/.gitreview" )
-if [[ "${TESTING_BRANCH}" == "" ]]; then
+if [[ ${TESTING_BRANCH} == "" ]]; then
   TESTING_BRANCH="master"
 fi
 

@@ -12,39 +12,41 @@ packer {
 }
 
 variable "profile" {
-    default     = "ingot"
+  default     = "ingot"
 }
 variable "vpc_id" {
-    default     = "vpc-06668cf85af082456"
+  #default  = "vpc-06668cf85af082456"
+  describe  = ""
+  default   = []
 }
 variable "subnet_id" {
-    default     = "subnet-05bb983919aff8851"
+  #default     = "subnet-05bb983919aff8851"
 }
 
 variable "subnet_id" {
-    vpc_id = data.aws_vpc.vpc_id
+  #vpc_id = data.aws_vpc.vpc_id
 }
 variable "ami_id" {
-    default     = "ami-04dfd853d88e818e8"   
+  #default     = "ami-04dfd853d88e818e8"   
 }
 
 variable "region" {
-    default     = "eu-central-1" 
+  #default     = "eu-central-1" 
 }
 
 variable "amazon-ami" {
-    default     =   "current"
+  default     =   "current"
 }
 
 variable "standardCPUCredit" {
-    default     = "50"
+  default     = "50"
 }
 
 variable "ami_prefix" {
   type    = string
-  default = "packer-linux-redis"
+  default = "packer-linux"
 }
 
 local {
-    timestamp   = "${formatdate("YYYYMMDD'-'hhmmss", timestamp())}"
+  timestamp   = "${formatdate("YYYYMMDD'-'hhmmss", timestamp())}"
 }
