@@ -59,20 +59,20 @@ tmpdir                          = /tmp
 lc_messages_dir                 = /usr/share/mysql
 lc_messages                     = en_US
 skip-external-locking
-myisam_recover          		= BACKUP
-key_buffer_size     			= 128M
-#open-files-limit   			= 2000
-table_open_cache    			= 400
-myisam_sort_buffer_size 		= 512M
-concurrent_insert   			= 2
-read_buffer_size    			= 2M
-read_rnd_buffer_size    		= 1M
-innodb_buffer_pool_size 		= 20G
-innodb_log_buffer_size  		= 8M
-innodb_file_per_table   		= 1
-innodb_open_files   			= 400
-innodb_io_capacity  			= 400
-innodb_flush_method 			= O_DIRECT
+myisam_recover          		    = BACKUP
+key_buffer_size     			      = 128M
+#open-files-limit   			      = 2000
+table_open_cache    			      = 400
+myisam_sort_buffer_size 		    = 512M
+concurrent_insert   			      = 2
+read_buffer_size    			      = 2M
+read_rnd_buffer_size    		    = 1M
+innodb_buffer_pool_size 		    = 20G
+innodb_log_buffer_size  		    = 8M
+innodb_file_per_table   		    = 1
+innodb_open_files   			      = 400
+innodb_io_capacity  			      = 400
+innodb_flush_method 			      = O_DIRECT
 EOF
 sudo service mysql restart
 # =================================

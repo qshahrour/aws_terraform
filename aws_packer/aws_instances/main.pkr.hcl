@@ -35,7 +35,7 @@ variable "region" {
 }
 
 variable "amazon-ami" {
-  default     =   "current"
+  default     = "current"
 }
 
 variable "standardCPUCredit" {

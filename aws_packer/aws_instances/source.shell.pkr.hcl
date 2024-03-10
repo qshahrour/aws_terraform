@@ -43,9 +43,9 @@ build {
 
     provisioner "shell-local" {
         inline = [
-            "chef install --chef-license accept-silent",
-            "chef update --attributes",
-            "chef export ${local.artifacts_directory}/chef --force"
+            "sudo apt install -ansible",
+            "sudo apt update --attributes",
+            "chef export ${local.artifacts_directory}/--force"
         ]
     }
 }
@@ -60,31 +60,31 @@ local = {
 }
 
 build {
-    name = "native-build"
-    sources = local.native_build ? (local.native_iso ? compact([lookup(local.native_iso_sources, local.image_provider, "")]) : compact([lookup(local.native_import_sources, local.image_provider, "")])) : ["null.core"]
+    name            = "native-build"
+    sources         = local.native_build ? (local.native_iso ? compact([lookup(local.native_iso_sources, local.image_provider, "")]) : compact([lookup(local.native_import_sources, local.image_provider, "")])) : ["null.core"]
 
     provisioner "shell" {
-        script            = "${path.root}/chef/initialize.sh"
+        script      = "${path.root}/chef/initialize.sh"
     }
 
     provisioner "file" {
-        source              = "${local.artifacts_directory}/chef/"
-        destination         = local.chef_destination
+        source      = "${local.artifacts_directory}/chef/"
+        destination = local.chef_destination
     }
 
     provisioner "file" {
-        sources             = fileset(path.cwd, "attributes.*.json")
-        destination         = local.chef_destination
+        sources     = fileset(path.cwd, "attributes.*.json")
+        destination = local.chef_destination
     } 
 
     provisioner "shell" {
-        script              = "${path.root}/chef/apply.sh"
-        max_retries         = local.chef_max_retries
+        script      = "${path.root}/chef/apply.sh"
+        max_retries = local.chef_max_retries
         pause_before        = "90s"
         start_retry_timeout = local.chef_start_retry_timeout
 
         env = {
-            CHEF_ATTRIBUTES = local.chef_attributes
+            JAMMY_ATTRIBUTES = local.chef_attributes
         }
     }
 

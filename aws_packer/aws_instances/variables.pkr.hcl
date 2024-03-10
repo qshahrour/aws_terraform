@@ -102,6 +102,11 @@ variable "host_port" {
   default = "4444"
 }
 
+variable "host_port" {
+  type    = string
+  default = "22"
+}
+
 variable "http_port" {
   type    = string
   default = "9000"
@@ -123,12 +128,17 @@ variable "ssh_clear_authorized_keys" {
 
 variable "cc" {
   type    = string
-  default = "false"
+  default = ""
 }
 
 variable "ubuntu_version" {
   type    = string
-  default = "false"
+  default = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"
+}
+
+variable "ssh_file_transfer_method" {
+  type    = string
+  default = "scp"
 }
 
 
@@ -136,19 +146,17 @@ variable "ubuntu_version" {
 
 
 
-ubuntu_version                  = ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*
-host_port_max                   = var.host_port_max
-host_port_min                   = var.host_port_min
-http_content                    = { "/user-data" = templatefile(var.user_data_location, { var = var }) }
-ssh_agent_auth                  = var.ssh_agent_auth
-ssh_clear_authorized_keys       = var.ssh_clear_authorized_keys
-ssh_disable_agent_forwarding    = var.ssh_disable_agent_forwarding
-ssh_file_transfer_method        = var.ssh_file_transfer_method
-ssh_handshake_attempts          = var.ssh_handshake_attempts
-ssh_keep_alive_interval         = var.ssh_keep_alive_interval
-ssh_port                        = var.ssh_port
-ssh_pty                         = var.ssh_pty
-ssh_timeout                     = var.ssh_timeout
-ssh_username                    = var.ssh_username
-ssh_file_transfer_method        = var.ssh_file_transfer_method
-ssh_handshake_attempts          = var.ssh_handshake_attempts
+#ubuntu_version                  = ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*
+#host_port                       = var.host_port
+#http_content                    = { "/user-data" = templatefile(var.user_data_location, { var = var }) }
+#ssh_agent_auth                  = var.ssh_agent_auth
+#ssh_clear_authorized_keys       = var.ssh_clear_au#thorized_keys
+#ssh_disable_agent_forwarding    = var.ssh_disable_agent_forwarding
+#ssh_handshake_attempts          = var.ssh_handshake_attempts
+#ssh_keep_alive_interval         = var.ssh_keep_alive_interval
+#ssh_port                        = var.ssh_port#
+#ssh_pty                         = var.ssh_pty
+#ssh_timeout                     = var.ssh_timeout
+#ssh_username                    = var.ssh_username
+#ssh_file_transfer_method        = var.ssh_file_transfer_method
+#ssh_handshake_attempts          = var.ssh_handshake_attempts
