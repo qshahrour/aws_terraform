@@ -48,3 +48,47 @@ source "amazon-ebs" "standard" {
     ssh_password        = local.communicator.password
     ssh_timeout         = local.communicator.timeout
 }
+variable "cloud_base_filter_name" {
+  type     = string
+  default  = "cloud-hvm-2.0.*-x86_64-gp2"
+}
+
+variable "cloud_owners" {
+  type     = string
+  default  = "happycloud"
+}
+
+data "happycloud" "happycloud-linux2-east" {
+  filters = {
+    name =  var.cloud_base_filter_name
+  }
+  most_recent = true
+  owners = var.cloud_owners
+}
+
+locals {
+  cloud_owners           = ["happycloud"]
+  cloud_base_filter_name = "cloud-hvm-2.0.*-x86_64-gp2"
+}
+
+data "happycloud" "happycloud-linux2-east" {
+  filters = {
+    name = local.cloud_base_filter_name
+  }
+  most_recent = true
+  owners = local.cloud_owners
+
+  locals {
+  cloud_owners           = ["happycloud"]
+  cloud_base_filter_name = "cloud-hvm-2.0.*-x86_64-gp2"
+}
+
+data "happycloud" "happycloud-linux2-east" {
+  filters = {
+    name = local.cloud_base_filter_name
+  }
+  most_recent = true
+  owners = local.cloud_owners
+}
+
+}

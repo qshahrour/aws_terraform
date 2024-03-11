@@ -4,7 +4,7 @@ terraform {
     aws = {
       sources = [
         "hashicorp/aws",
-        "../networking"
+        "../vpc_network_module"
       ]
     }#region          = var.aws_region
   }
@@ -20,7 +20,7 @@ locals {
 }
 
 module "vpc" {
-    source                = "github.com/qshahrour/packer_module"
+    source                = "github.com/qshahrour/packer_module/aws_terraform"
     version               = "3.2.0"
     # insert the 19 required variables here
     name                  = var.vpc_name
