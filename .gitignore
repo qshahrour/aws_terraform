@@ -9,7 +9,8 @@ node_modules
 
 # Users Environment Variables
 .lock-wscript
-
+.tfvars
+*.tfvars
 # Garbage files
 .DS_Store
 
