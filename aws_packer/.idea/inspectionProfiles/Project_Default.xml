@@ -1,0 +1,290 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="ConditionalExpressionWithIdenticalBranchesJS" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ConfusingFloatingPointLiteralJS" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ConfusingPlusesOrMinusesJS" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="DuplicateConditionJS" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="DuplicatedCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <Languages>
+        <language minSize="225" name="Python" />
+      </Languages>
+    </inspection_tool>
+    <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ForLoopReplaceableByWhileJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_ignoreLoopsWithoutConditions" value="false" />
+    </inspection_tool>
+    <inspection_tool class="FunctionNamingConventionJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_regex" value="[a-z][A-Za-z]*" />
+      <option name="m_minLength" value="4" />
+      <option name="m_maxLength" value="32" />
+    </inspection_tool>
+    <inspection_tool class="IfStatementWithIdenticalBranchesJS" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="IfStatementWithTooManyBranchesJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_limit" value="3" />
+    </inspection_tool>
+    <inspection_tool class="IncorrectHttpHeaderInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="customHeaders">
+        <set>
+          <option value="body_format" />
+          <option value="entity" />
+          <option value="Language" />
+          <option value="&lt;&gt; 2023-04-07T053809.400.json" />
+          <option value="body" />
+          <option value="import json" />
+          <option value="https" />
+          <option value="-d '" />
+          <option value="{" />
+          <option value="&quot;description&quot;" />
+          <option value="&quot;url&quot;" />
+          <option value="&quot;active&quot;" />
+          <option value="&quot;events&quot;" />
+          <option value="&quot;repo" />
+          <option value="&quot;issue" />
+          <option value="]" />
+          <option value="}" />
+          <option value="import requests" />
+        </set>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="JSClassNamingConvention" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="JSEqualityComparisonWithCoercion.TS" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="JSHint" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="JSNonStrictModeUsed" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="JSUnfilteredForInLoop" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="JSXSyntaxUsed" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="LocalVariableNamingConventionJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_regex" value="[a-z][A-Za-z]*" />
+      <option name="m_minLength" value="1" />
+      <option name="m_maxLength" value="32" />
+    </inspection_tool>
+    <inspection_tool class="MagicNumberJS" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ObjectAllocationIgnoredJS" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ParameterNamingConventionJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_regex" value="[a-z][A-Za-z]*" />
+      <option name="m_minLength" value="1" />
+      <option name="m_maxLength" value="32" />
+    </inspection_tool>
+    <inspection_tool class="PyArgumentEqualDefaultInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="PyCompatibilityInspection" enabled="true" level="WARNING" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES">
+      <option name="ourVersions">
+        <value>
+          <list size="9">
+            <item index="0" class="java.lang.String" itemvalue="2.7" />
+            <item index="1" class="java.lang.String" itemvalue="3.12" />
+            <item index="2" class="java.lang.String" itemvalue="3.5" />
+            <item index="3" class="java.lang.String" itemvalue="3.6" />
+            <item index="4" class="java.lang.String" itemvalue="3.7" />
+            <item index="5" class="java.lang.String" itemvalue="3.8" />
+            <item index="6" class="java.lang.String" itemvalue="3.9" />
+            <item index="7" class="java.lang.String" itemvalue="3.10" />
+            <item index="8" class="java.lang.String" itemvalue="3.11" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyMandatoryEncodingInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myAllPythons" value="true" />
+    </inspection_tool>
+    <inspection_tool class="PyMissingOrEmptyDocstringInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="PyMissingTypeHintsInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="7">
+            <item index="0" class="java.lang.String" itemvalue="requests" />
+            <item index="1" class="java.lang.String" itemvalue="tabulate" />
+            <item index="2" class="java.lang.String" itemvalue="psutil" />
+            <item index="3" class="java.lang.String" itemvalue="boto3" />
+            <item index="4" class="java.lang.String" itemvalue="oauthlib" />
+            <item index="5" class="java.lang.String" itemvalue="sqlalchemy" />
+            <item index="6" class="java.lang.String" itemvalue="pandas" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyPep8Inspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="E111" />
+          <option value="E302" />
+          <option value="E305" />
+          <option value="E741" />
+          <option value="E501" />
+          <option value="E131" />
+          <option value="E303" />
+          <option value="E128" />
+          <option value="E225" />
+          <option value="E203" />
+          <option value="E402" />
+          <option value="E117" />
+          <option value="E127" />
+          <option value="E712" />
+          <option value="E301" />
+          <option value="E306" />
+          <option value="E722" />
+          <option value="W292" />
+          <option value="W605" />
+          <option value="E114" />
+          <option value="E116" />
+          <option value="E304" />
+          <option value="E202" />
+          <option value="E101" />
+          <option value="E201" />
+          <option value="W191" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyPep8NamingInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="N801" />
+          <option value="N806" />
+          <option value="N811" />
+          <option value="N802" />
+          <option value="N803" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyShadowingBuiltinsInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredNames">
+        <list>
+          <option value="tuple" />
+          <option value="locals" />
+          <option value="type" />
+          <option value="object" />
+          <option value="list" />
+          <option value="dir" />
+          <option value="len" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="object.route" />
+          <option value="str.status" />
+          <option value="str.status_code" />
+          <option value="str.as_string" />
+          <option value="message_payload" />
+          <option value="h" />
+          <option value="url" />
+          <option value="myscripts.mysql.connector" />
+          <option value="ssh_client.ssh_function.connect.run" />
+          <option value="object.recv" />
+          <option value="str.decode" />
+          <option value="object.decode" />
+          <option value="mysshf.mysshf.ssht_client" />
+          <option value="mysshf.mysshf.myssh_connect" />
+          <option value="object.invoke_shell" />
+          <option value="requests.models.Response.payload" />
+          <option value="set.__getitem__" />
+          <option value="mysshf.invoke_ssh.year" />
+          <option value="mysshf.invoke_ssh.month" />
+          <option value="mysshf.invoke_ssh.day" />
+          <option value="paramiko.util.log_to_file" />
+          <option value="mysshd.connect" />
+          <option value="SysModule.Bitbucket_SubProcess.hostname" />
+          <option value="git" />
+          <option value="GitBitbucket.BitBucketApi.requests_oauthlib" />
+          <option value="thread" />
+          <option value="GitBitbucket.BitBucketApi.Queue" />
+          <option value="webhook" />
+          <option value="NewRelic.errexit" />
+          <option value="DicoratorModule.DecoratorArgs.SysModule" />
+          <option value="Shhd.sshd.sshd" />
+          <option value="sshd" />
+          <option value="sentryscript.SENTRY_OPTIONS" />
+          <option value="services_monit.Process_List" />
+          <option value="shhd.inv_elf_script.sheld" />
+          <option value="Queue" />
+          <option value="MySql.connect_mysql.db_info" />
+          <option value="Posts.HttpReq.linkss" />
+          <option value="Posts.HttpReq.*" />
+          <option value="mysql.connecter" />
+          <option value="time.now" />
+          <option value="ssh.Setup.shell" />
+          <option value="self.self.Config" />
+          <option value="script.LOGGER_NAME" />
+          <option value="get_ptocess.LOGGER_NAME" />
+          <option value="logging.getLogger" />
+          <option value="datetime.date.today" />
+          <option value="os.getcmd" />
+          <option value="datetime.time.sleep" />
+          <option value="datetime.time.ctime" />
+          <option value="datetime.time.time" />
+          <option value="PyCourse.seq_reshape.indentprint" />
+          <option value="paramiko.invoke_shell" />
+          <option value="ssh.Setup.Config.get_transport" />
+          <option value="ssh.Setup.Config.close" />
+          <option value="PyCourse.shhd.ssh_client.ssh_client.myparamiko.get_shell" />
+          <option value="paramiko.client.SSHClient.show" />
+          <option value="paramiko.client.SSHClient.linux_shell" />
+          <option value="calendar.month.month" />
+          <option value="ssh.config.output" />
+          <option value="Scripts.Common.geturl.price_parser" />
+          <option value="PyCourse.GitCommands.ingotbrokers.PRIVATE_KEY_FILE" />
+          <option value="list.stdin" />
+          <option value="Clases.Services.start_error_message" />
+          <option value="psutil.Process_iter" />
+          <option value="Aws.S3PreSigneduUrl.OBJECT_NAME" />
+          <option value="Aws.S3PreSigneduUrl.BUCKET_NAME" />
+          <option value="string" />
+          <option value="stringq" />
+          <option value="multiprocessing.process.communicate" />
+          <option value="self.assert_filename_is" />
+          <option value="self.given_metadata" />
+          <option value="object.strip" />
+          <option value="object.splitlines" />
+          <option value="contents" />
+          <option value="object.change_type" />
+          <option value="object.description" />
+          <option value="object.category" />
+          <option value="clone" />
+          <option value="source.elf.elfapi.flask_cors" />
+          <option value="repo.official_build" />
+          <option value="xml.sax" />
+          <option value="concurrent.futures.thread.allocate_lock" />
+          <option value="paramiko.client.SSHClient.open_transport" />
+          <option value="payload" />
+          <option value="AAA.awsboto.client" />
+          <option value="boto3.client.modify_rule" />
+          <option value="boto3.client.describe_rules" />
+          <option value="aws_boto.http_req.HTTPConnection.*" />
+          <option value="aws_boto.http_req.param" />
+          <option value="aws_boto.http_req.*" />
+          <option value="AAA.aws_boto.website_loadbalancer.setup.actions" />
+          <option value="aws_boto.use_elb_rules.httpd_response" />
+          <option value="aws_boto.use_elb_rules.HTTPD_LISTENR" />
+          <option value="aws_boto.weblb_httpd.httpd_response" />
+          <option value="aws_boto.weblb_add_rule" />
+          <option value="AAA.syslog.max_rety" />
+          <option value="AAA.syslog.eni_id" />
+          <option value="GitHub.apps.aiohttp.main.slack_bolt" />
+          <option value="ssh.config.target_hostname" />
+          <option value="scripts.bulk_issue._convert_host_to_hex" />
+          <option value="scripts.bulk_issue.LinuxTCPConnectionInfo._get_exclude_ips" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyUnusedFunctionInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RegExpAnonymousGroup" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="RestRoleInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredRoles">
+        <value>
+          <list size="0" />
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="ShellCheck" enabled="true" level="ERROR" enabled_by_default="true">
+      <shellcheck_settings value="SC2034,SC2086,SC2220" />
+    </inspection_tool>
+    <inspection_tool class="SqlResolveInspection" enabled="true" level="ERROR" enabled_by_default="true">
+      <option name="suppressForPossibleStringLiterals" value="true" />
+    </inspection_tool>
+    <inspection_tool class="StandardJS" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="Stylelint" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="TailRecursionJS" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="TsLint" enabled="true" level="WARNING" enabled_by_default="true" />
+  </profile>
+</component>

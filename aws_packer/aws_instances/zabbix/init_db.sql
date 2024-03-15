@@ -1,0 +1,3 @@
+CREATE DATABASE IF NOT EXISTS `zabbix`;
+ALTER USER root@'localhost' IDENTIFIED BY 'Zabbix@2024';
+GRANT ALL PRIVILEGES ON `zabbix`.* TO 'root'@'localhost' WITH GRANT OPTION;

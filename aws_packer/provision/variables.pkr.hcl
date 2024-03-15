@@ -35,6 +35,10 @@ variable "sg" {
     default             = "sg"
 }
 
+
+
+
+
 variable "owners" {
     type                = string
     default             = "637423636753"
@@ -77,4 +81,3 @@ variable "ssh_key_name" {
     default             = "awskey"
     #default             = "~/.ssh/id_rsa"
 }
-

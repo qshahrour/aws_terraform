@@ -6,15 +6,15 @@ locals {
 
     source_options_standard = {
         ami_name                = "packer-${local.timestamp}"
-        headless                = true
-        output_directory        = "${local.artifacts_directory}/image"
+        #headless                = true
+        #output_directory        = "${local.artifacts_directory}/image"
 
-        cpus                = 4
-        memory              = 8192
-        disk_size           = 130048
+        #cpus                    = 4
+        #memory                  = 8192
+        #disk_size               = 130048
 
-        boot_wait           = "2s"
-        shutdown_timeout    = "5m"
+        #boot_wait               = "2s"
+        #shutdown_timeout        = "5m"
     }
 
     communicator    = {
