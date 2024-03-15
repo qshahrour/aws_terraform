@@ -5,22 +5,22 @@
 data "aws_caller_identity" "current" {}
 
 data "aws_availability_zones" "az" {
-    state = "available"
+  state = "available"
 }
 
-resource "aws_vpc" "vpc" {
-    assign_generated_ipv6_cidr_block = false
-    cidr_block                       = "10.0.0.0/22"
-    enable_dns_hostnames             = true
-    enable_dns_support               = true
-    instance_tenancy                 = "default"
-    tags = {
-        "Name" = format("eks-%s-cluster", data.aws_ssm_parameter.instanc_name.value)
-    }
+resource "aws_vpc" "vpc_id" {
+  assign_generated_ipv6_cidr_block = false
+  cidr_block                       = "10.0.0.0/22"
+  enable_dns_hostnames             = true
+  enable_dns_support               = true
+  instance_tenancy                 = "default"
+  tags = {
+      "Name" = format("eks-%s-cluster", data.aws_ssm_parameter.instanc_name.value)
+  }
 }
 
 data "vpc_id" "subnet_id" {
-    vpc_id = data.aws_vpc.vpc_name.id
+  vpc_id = data.aws_vpc.vpc_name.id
 }
 
 resource "aws_subnet" "public_subnet" {
@@ -40,7 +40,7 @@ resource "aws_subnet" "public_subnet" {
 }
 
 resource "aws_security_group_rule" "sg" {
-    
+
     vpc_name        =   var.vpc_id
     name            =   "sg"
     ingress {
@@ -51,7 +51,7 @@ resource "aws_security_group_rule" "sg" {
         protocol            = "tcp"
         cidr_blocks         = [aws_vpc.var.vpc_name.cidr_block, "190.86.109.131/32"]
     }
-    
+
     ingress {
         description     = "Allow port HTTP"
         from_port       = 80
@@ -67,7 +67,7 @@ resource "aws_security_group_rule" "sg" {
         protocol        = "icmp"
         cidr_blocks     = [aws_subnet.subnet_id.cidr_block, "190.86.109.131/32"]
     }
-  
+
     egress {
         description     = "Allow all for Egress"
         from_port       = 0
