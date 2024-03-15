@@ -1,5 +1,5 @@
 ###############################################
-# => Defining Plugins
+#=> Defining Plugins
 
 packer {
   required_plugins {
