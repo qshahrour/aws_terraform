@@ -132,12 +132,12 @@ build {
 
   provisioner "shell" {
     inline = [
-        "sudo apt-get update",
-        "sudo apt-get install --yes -qq ca-certificates curl lsb-release gnupg apt-utils software-properties-common wget git",
-        "sudo add-apt-repository universe multiverse --yes",
-        "sudo rm -rf /var/lib/apt/lists/*",
-        "sudo rm -rf /var/log/*",
-        "sudo apt autoclean -y"
+      "sudo apt-get update",
+      "sudo apt-get install --yes -qq ca-certificates curl lsb-release gnupg apt-utils software-properties-common wget git",
+      "sudo add-apt-repository universe multiverse --yes",
+      "sudo rm -rf /var/lib/apt/lists/*",
+      "sudo rm -rf /var/log/*",
+      "sudo apt autoclean -y"
     ]
   }
 
