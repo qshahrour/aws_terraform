@@ -1,3 +1,6 @@
-CREATE DATABASE IF NOT EXISTS `zabbix`;
+CREATE DATABASE IF NOT EXISTS `data`;
 ALTER USER root@'localhost' IDENTIFIED BY 'Zabbix@2024';
-GRANT ALL PRIVILEGES ON `zabbix`.* TO 'root'@'localhost' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON `data`.* TO 'root'@'localhost' WITH GRANT OPTION;
+
+CREATE USER 'qa'@'localhost' IDENTIFIED BY 'Zabbix@2024';
+GRANT ALL PRIVILEGES ON `data`.* TO 'qa'@'localhost' WITH GRANT OPTION;

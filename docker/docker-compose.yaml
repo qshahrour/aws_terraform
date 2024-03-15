@@ -1,11 +1,11 @@
 version: '3.5'
 services:
-  
+
   zabbix:
-    container_name: zabbix
-    hostname: zabbix
-    image: zabbix/zabbix-server-mysql:ubuntu-6.4.11-latest
-    restart: always
+    container_name: $BACKEND_CONTAINER_NAME
+    hostname: $BACKEND_HOSTNAME
+    image: $BACKEND_IMAGE_NAME
+    restart: $RESTART_STATE
     links:
       - mysql
     ports:
@@ -19,7 +19,7 @@ services:
       - MYSQL_USER=zabbix
       - MYSQL_PASSWORD=Zabbix@@2024
       #- MYSQL_ROOT_PASSWORD=Zabbix@@2024
-      - ZBX_ALLOWUNSUPPORTEDDBVERSIONS=1
+      - ALLOWUNSUPPORTEDDBVERSIONS=1
     depends_on:
       - mysql
     stop_grace_period: 5s
@@ -57,7 +57,7 @@ services:
     hostname: nginx
     image: zabbix/zabbix-web-nginx-mysql:ubuntu-6.4-latest
     restart: always
-    links: 
+    links:
       - mysql
     ports:
       - '80:8080'
@@ -68,7 +68,7 @@ services:
       - MYSQL_DATABASE=zabbix
       - MYSQL_USER=zabbix
       - MYSQL_PASSWORD=Zabbix@2024
-      - ZBX_HOSTNAME=Zabbix
+      - HOSTNAME=Zabbix
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/"]
       interval: 10s
@@ -76,7 +76,7 @@ services:
       retries: 3
       start_period: 30s
     stop_grace_period: 10s
-    depends_on: 
+    depends_on:
       - mysql
     sysctls:
       - net.core.somaxconn=65535
@@ -94,6 +94,7 @@ services:
 #command: --ignore-db-dir=lost+found
 #command: --initialize-insecure
 #command: --disable-partition-engine-check
+# zabbix/zabbix-server-mysql:ubuntu-6.4.11-latest
 
 # => db:
   # CREATE USER 'zabbix'@'%' IDENTIFIED with 'Zabbix@2024';

@@ -15,6 +15,7 @@ packer {
 #############################################
 
 variable "profile" {
+  type            = string
   default         = "ingot"
 }
 variable "vpc_id" {
@@ -28,11 +29,11 @@ variable "subnet_id" {
 
 variable "ami_id" {
   type            = string
-  default         = "ami-04dfd853d88e818e8"   
+  default         = "ami-04dfd853d88e818e8"
 }
 
 variable "region" {
-  default         = "eu-central-1" 
+  default         = "eu-central-1"
 }
 
 variable "amazon-ami" {
@@ -62,6 +63,9 @@ variable "app_name" {
   default         = "httpd"
 }
 
+variable "script_path" {
+  default         = env("SCRIPT_PATH")
+}
 ###########################################
 locals {
   app_name        = "httpd"
@@ -70,7 +74,7 @@ locals {
 locals {
   ami_name        = "${var.app_name}-prodcution"
   timestamp       = "${formatdate("YYYYMMDD'-'hhmmss", timestamp())}"
-} 
+}
 
 //local "secret_key" {
 //  key             = "${var.secret_key}"
@@ -79,9 +83,7 @@ locals {
 ###########################################
 #source_ami          = "${var.ami_id}"
 
-variable "script_path" {
-  default         = env("SCRIPT_PATH")
-}
+
 
 ########################################
 # => Writing our Sources
@@ -89,7 +91,7 @@ variable "script_path" {
 #=> packer build -var 'app_name=httpd' ami.pkr.hcl
 #packer build -var-file="vars.packer.hcl"
 # => packer build -var-file="vars.packer.hcl"
-source "amazon-ebs" "httpd" {   
+source "amazon-ebs" "httpd" {
   ami_name            = "PACKER-DEMO-${local.app_name}"
   instance_type       = "${var.instance_type}"
   region              = "${var.region}"
@@ -98,13 +100,17 @@ source "amazon-ebs" "httpd" {
   spot_price          = "auto"
   ssh_wait_timeout    = "10000s"
   skip_create_ami     = true
+  #inline                   = [
+  #  "echo '${var.ssh_user} ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/99${var.ssh_user}",
+  #  "chmod 0440 /etc/sudoers.d/99${var.ssh_user}"
+  #]
   tags = {
-    Env       = "demo"
+    Env       = "demo",
     Name      = "packer-demo-${var.app_name}"
   }
   launch_block_device_mappings {
     device_name           = "/dev/sda1"
-    volume_size           = "100G"
+    volume_size           = 100
     volume_type           = "gp3"
     delete_on_termination = true
     encrypted             = false
@@ -120,7 +126,7 @@ source "amazon-ebs" "httpd" {
   }
 }
 
-#########################################
+#######################################################################
 # => Starting our build
 ########################################
 build {
@@ -128,27 +134,72 @@ build {
 
   provisioner "shell" {
     inline = [
-        "apt-get update",
-        "apt-get install -y nginx"
+        "sudo apt-get update",
+        "sudo apt-get install --yes -qq ca-certificates curl lsb-release gnupg apt-utils software-properties-common wget git",
+        "sudo add-apt-repository universe multiverse --yes",
+        "sudo rm -rf /var/lib/apt/lists/*",
+        "sudo rm -rf /var/log/*",
+        "sudo apt autoclean -y"
+    ]
+  }
+
+  post-processor "shell-local" {
+    inline = ["sudo apt-get install --no-install-recommends -qq --yes nginx-full"]
+  }
+        #"sudo rm /var/lib/apt/lists/* && sudo apt-get clean"
+
+  provisioner "shell" {
+
+    inline = [
+        q
+      "sudo apt-get install --yes -qq apt-transport-https ca-certificates curl git",
+      "sudo install -m 0755 -d /etc/apt/keyrings",
+      "sudo curl -fsSL \"https://download.docker.com/linux/ubuntu/gpg\" -o /etc/apt/keyrings/docker.asc",
+      "sudo a+r q/etc/apt/keyrings/docker.asc",
+      "echo \"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc]\" \"https://download.docker.com/linux/ubuntu\" \"$(. /etc/os-release && echo jammy)\" stable | sudo tee \"/etc/apt/sources.list.d/docker.list\" > \"/dev/null\" \",
+      "\"$(. /etc/os-release && echo \"${VERSION_CODENAME}\") stable\" | sudo tee \"/etc/apt/sources.list.d/docker.list\" > /dev/null",
+      "sudo apt-get update",
+      "sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin"
     ]
   }
 
   provisioner "shell" {
-    script = "script/install_docker.sh"
+    inline = [
+      "sudo apt-get update --yes",
+      "sudo apt-get install -y docker-ce-cli docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin",
+      "sudo rm -rf /var/lib/apt/lists/* /var/log/*"
+    ]
   }
+
+  post-processor "shell-local" {
+    inline = [
+      "sudo groupadd docker",
+      "sudo usermod -a -G docker ubuntu"
+    ]
+  }
+
+  provisioner "shell" {
+    inline = [ "echo | nc -G 5 -w 5 -v localhost 10022 2>&1" ]
+  }
+
+  provisioner "shell" {
+    inline = [ "curl -kvs --connect-to \"ifconfig.co:443:localhost:8443\" \"https://ifconfig.co\"/" ]
+  }
+  // provisioner "shell" {
+  //    inline   = ["script = script/install_docker.sh"]
+  //}
 
   post-processor "shell-local" {
     inline = ["script has been copied to server"]
   }
 
   provisioner "file" {
-    inline = [
-      source= ./docker-compose.yaml,
-      destination= /home/ubuntu/
-    ]
+    source = "./docker-compose.yaml"
+    destination = "/home/ubuntu/"
+
   }
 
-  provisioner "shell" { 
+  provisioner "shell" {
     inline = [
       "ls -al /home/ubuntu",
       "cat /home/ubuntu/docker-compose.yaml"
@@ -156,8 +207,7 @@ build {
   }
 
     //provisioner "shell" {
-  //  script          = "${var.script_path}/demo-script.sh" 
+  //  script          = "${var.script_path}/demo-script.sh"
   //}
 
 }
-

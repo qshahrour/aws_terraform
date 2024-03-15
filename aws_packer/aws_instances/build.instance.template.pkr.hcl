@@ -7,7 +7,7 @@ packer {
       version = "~> 1.2"
       source  = "github.com/hashicorp/amazon"
     }
-    
+
   }
 }
 
@@ -31,11 +31,11 @@ variable "subnet_id" {
 #}
 variable "ami_id" {
   type        = string
-  default     = "ami-04dfd853d88e818e8"   
+  default     = "ami-04dfd853d88e818e8"
 }
 
 variable "region" {
-  default     = "eu-central-1" 
+  default     = "eu-central-1"
 }
 
 variable "amazon-ami" {
@@ -199,10 +199,10 @@ build {
       #"sudo mkdir -pv /home/ubuntu/.docker",
       #"sudo chown ubuntu:ubuntu /home/ubuntu/.docker -R",
       #"sudo chmod g+rwx /home/ubuntu/.docker -R",
-      "sudo systemctl enable docker.service",
-      "sudo systemctl enable containerd.service",
-      "sudo systemctl start docker.service",
-      "sudo systemctl start containerd.service"
+      #"sudo systemctl enable docker.service",
+      #"sudo systemctl enable containerd.service",
+      #"sudo systemctl start docker.service",
+      #"#sudo systemctl start containerd.service"
     ]
   }
 
@@ -232,7 +232,7 @@ build {
     inline = ["docker-compose.yaml up -d > build.txt"]
   }
 
-  
+
   //provisioner "shell" {
     //inline  =
       //[

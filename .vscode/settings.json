@@ -1,0 +1,25 @@
+{
+  "editor.fontLigatures": false,
+  "editor.fontSize": 18,
+  "editor.fontVariations": false,
+  "editor.fontWeight": "bold",
+  "workbench.view.alwaysShowHeaderActions": true,
+  "workbench.editor.enablePreviewFromCodeNavigation": true,
+  "scm.alwaysShowActions": true,
+  "scm.alwaysShowRepositories": true,
+  "scm.countBadge": "all",
+  "scm.defaultViewMode": "tree",
+  "scm.diffDecorationsGutterPattern": {
+    "added": true
+  },
+  "terminal.integrated.accessibleViewFocusOnCommandExecution": true,
+  "terminal.integrated.allowMnemonics": true,
+  "github-actions.use-enterprise": true,
+  "githubPullRequests.assignCreated": "qa",
+  "githubPullRequests.quickDiff": true,
+  "githubPullRequests.showPullRequestNumberInTree": false,
+  "npm.runSilent": true,
+  "openInGitHub.providerType": "github",
+  "php.validate.run": "onType",
+  "powermode.enabled": true
+}

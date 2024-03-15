@@ -1,5 +1,5 @@
 #=============================
-#   Packer Provisioners
+### Packer Provisioners ###
 #=============================
 
 packer {
@@ -27,11 +27,11 @@ variable "subnet_id" {
   #vpc_id = data.aws_vpc.vpc_id
 }
 variable "ami_id" {
-  #default     = "ami-04dfd853d88e818e8"   
+  #default     = "ami-04dfd853d88e818e8"
 }
 
 variable "region" {
-  #default     = "eu-central-1" 
+  #default     = "eu-central-1"
 }
 
 variable "amazon-ami" {

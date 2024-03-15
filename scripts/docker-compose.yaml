@@ -1,26 +1,25 @@
 version: '3.5'
 services:
   zabbix:
-    hostname: zabbix
-    container_name: zabbix
-    image: zabbix/zabbix-server-mysql:ubuntu-6.4-latest
+    hostname: $BACKEND_HOSTNAME
+    container_name: $SERVER_NAME
+    image: $BACKEND_IMAGE
     restart: always
     depends_on:
       - mysql
     ports:
-      - "10051:10051"
+      - ":"
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "/etc/timezone:/etc/timezone:ro"
-      #- "./zabbix/alertscripts:/usr/lib/zabbix/alertscripts" 
     links:
       - mysql
     environment:
-      - ZBX_HOSTNAME=localhost
-      - MYSQL_USER=root
-      - DB_SERVER_HOST=mysql 
-      - MYSQL_DATABASE=zabbix
-      - MYSQL_PASSWORD=Zabbix@2024
+      - HOSTNAME=
+      - MYSQL_USER=
+      - DB_SERVER_HOST=
+      - MYSQL_DATABASE=
+      - MYSQL_PASSWORD=
       - ZBX_ALLOWUNSUPPORTEDDBVERSIONS=1
     tmpfs: /tmp
     ulimits:
@@ -49,16 +48,17 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - "/etc/timezone:/etc/timezone:ro"
       - "./mysql:/var/lib/mysql:rw"
-      - "./zabbix/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql:ro"
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "./initdb.sql:/docker-entrypoint-initdb.d/initdb.sql:ro"
     environment:
-      - MYSQL_USER=root
-      - MYSQL_DATABASE=zabbix
-      - ZBX_HOSTNAME=zabbix
+      - MYSQL_USER=$MYSQL_USER
+      - MYSQL_DATABASE=$DATABASE
+      - HOSTNAME=
       - MYSQL_ROOT_HOSTS=%
       - MYSQL_CHARSET=utf8mb4
-      - MYSQL_ROOT_PASSWORD=Zabbix@2024
+      - MYSQL_ROOT_PASSWORD=
       - MYSQL_COLLATION=utf8mb4_general_ci
       - MYSQL_ALLOW_EMPTY_PASSWORD=true
     tmpfs: /tmp
@@ -72,28 +72,28 @@ services:
     cpus: 0.5
     mem_limit: 1024M
     mem_reservation: 512M
-    
+
     stop_grace_period: 1m
 
 
   nginx:
-    hostname: nginx
-    container_name: nginx
-    image: zabbix/zabbix-web-nginx-mysql:ubuntu-6.4.11
+    hostname: $FRONTEND_HOSTNAME
+    container_name: $FRONTEND_CONTAINER_NAME
+    image: $FRONTEND_IMAGE
     restart: always
     depends_on:
       - mysql
     ports:
-      - "80:80"
-      - "443:443"
+      - "$FRONT_HTTP_PORT:$FRONT_HTTP_PORT"
+      - "$FRONT_HTTPS_PORT:$FRONT_HTTPS_PORT"
     environment:
-      - MYSQL_USER=root
-      - ZBX_HOSTNAME=zabbix
-      - PHP_TZ="Europe/London"
-      - DB_SERVER_HOST=mysql
-      - MYSQL_DATABASE=zabbix
-      - MYSQL_PASSWORD=Zabbix@2024
-      - ZBX_SERVER_HOST=zabbix
+      - MYSQL_USER=$MYSQL_USER
+      - WEB_HOSTNAME=$WEB_HOSTNAME
+      - PHP_TZ="$ZONE"
+      - DB_SERVER_HOST=$MYSQL_HOST
+      - MYSQL_DATABASE=$DATABASE
+      - MYSQL_PASSWORD=$MYSQL_PASSWORD
+      - BACKEND_SERVER_HOST=$BACKEND_SERVER
     tmpfs: /tmp
     ulimits:
       nproc: 65535
@@ -105,7 +105,7 @@ services:
     cpus: 0.5
     mem_limit: 1024M
     mem_reservation: 512M
-    links: 
+    links:
       - mysql
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/"]
@@ -116,6 +116,34 @@ services:
     stop_grace_period: 10s
     sysctls:
       - net.core.somaxconn=65535
+
+
+### Variables ###
+
+# $FRONTEND_IMAGE
+# $FRONTEND_HOSTNAME
+# $FRONTEND_CONTAINER_NAME
+#
+# $BACKEND_IMAGE
+# $BACKEND_HOSTNAME
+# $BACKEND_CONTAINER_NAME
+#
+#
+# PHP_TZ="$ZONE"
+# MYSQL_PASSWORD=$MYSQL_PASSWORD
+# WEB_HOSTNAME=$WEB_HOSTNAME
+# BACKEND_SERVER_HOST=$BACKEND_SERVER
+#
+#
+#
+# $FRONT_HTTP_PORT
+# $FRONT_HTTPS_PORT
+# MYSQL_DATABASE= $DATABASE
+#
+# DB_SERVER_HOST=$MYSQL_HOST
+#############################################
+# ===========================================
+
 
 
 #zabbix-agent:

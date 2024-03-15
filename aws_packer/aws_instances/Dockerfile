@@ -36,6 +36,9 @@ RUN --mount=type=cache,target=/var/lib/apt/,sharing=locked \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/log/*
 
+RUN /bin/sh -c groupadd --gid 1000 node \
+    && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
+
 RUN apt install --no-install-recommends -y nginx-full
 RUN update-ca-certificates -f
 
