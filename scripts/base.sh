@@ -1,5 +1,7 @@
 #!/bin/bash
 
+git push --set-upstream origin main
+
 # Base Build ubuntu after first boot
 sudo apt update \
     && sudo apt install --no-install-recommends -qq -y \
