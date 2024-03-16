@@ -1,23 +1,23 @@
-Packer Module:
+## Packer Module: ##
 
 ## Basic examples of usage: ##
 
-data "amazon-parameterstore" "tets" {
+data "amazon-parameterstore" "basic" {
   name              = "packer_test"
   with_decryption   = false
 }
 
 ## usage example of the data source output ##
 locals {
-  value     = data.amazon-parameterstore.test.value
-  version   = data.amazon-parameterstore.test.version
-  arn       = data.amazon-parameterstore.test.arn
+  value     = data.amazon-parameterstore.basic.value
+  version   = data.amazon-parameterstore.basic.version
+  arn       = data.amazon-parameterstore.basic.arn
 }
 
 ## Basic example of an Amazon data source authentication using assume_role:
 
-data "amazon-parameterstore" "test" {
-  name              = "packer_test"
+data "amazon-parameterstore" "basic" {
+  name              = "packer_basic"
   with_decryption   = false
 
   assume_role {
@@ -27,10 +27,10 @@ data "amazon-parameterstore" "test" {
   }
 }
 
-data "amazon-ami" "test" {
+data "amazon-ami" "basic" {
   filters = {
     virtualization-type   = "hvm"
-    name                  = "ubuntu/images/*ubuntu-xenial-16.04-amd64-server-*"
+    name                  = "ubuntu/images/*ubuntu-jammyl-22.04-amd64-server-*"
     root-device-type      = "ebs"
   }
   owners          = ["099720109477"]
