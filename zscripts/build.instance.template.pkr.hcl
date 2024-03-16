@@ -23,12 +23,8 @@ variable "subnet_id" {
   default     = "subnet-05bb983919aff8851"
 }
 
-//variable "ssh_user" {
- // type        = string
- // default     = "ubuntu"
-//}
-  #vpc_id = data.aws_vpc.vpc_id
-#}
+#vpc_id = data.aws_vpc.vpc_id
+
 variable "ami_id" {
   type        = string
   default     = "ami-04dfd853d88e818e8"

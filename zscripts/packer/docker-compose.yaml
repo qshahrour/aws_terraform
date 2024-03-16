@@ -1,10 +1,10 @@
 version: '3.5'
 services:
-  zabbix:
+  zabbix-server:
     hostname: zabbix-server
-    container_name: backend
+    container_name: zabbix-server
     image: zabbix/zabbix-server-mysql:ubuntu-6.4-latest
-    restart: always
+    restart: unless-stopped
     depends_on:
       - mysql
     ports:
@@ -40,12 +40,12 @@ services:
       - net.ipv4.conf.all.secure_redirects=0
       - net.ipv4.conf.all.send_redirects=0
 
-  mysql-server:
-    hostname: mysql-server
+  mysql:
+    hostname: mysql
     container_name: database
     image: mysql:latest
     init: true
-    restart: always
+    restart: unless-stopped
     ports:
       - "3306:3306"
     volumes:
@@ -79,9 +79,9 @@ services:
 
 
   nginx:
-    hostname: nginx
-    container_name: frontend
     image: zabbix/zabbix-web-nginx-mysql:ubuntu-6.4-latest
+    container_name: frontend
+    hostname: nginx
     restart: always
     depends_on:
       - mysql

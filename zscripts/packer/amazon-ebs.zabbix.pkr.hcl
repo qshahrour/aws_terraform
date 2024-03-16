@@ -1,4 +1,3 @@
-
 #=> Defining Plugins
 packer {
   required_plugins {
@@ -8,7 +7,7 @@ packer {
     }
   }
 }
-
+######################################
 ###################################
 ## 	=> 	Defining Variables
 ###################################
@@ -17,13 +16,27 @@ variable "profile" {
   default   = "ingot"
 }
 
+//variable "vpc_id" {
+//  description   ="The VPC you're building AMI's in"
+//  type          =string
+//  default       ="vpc-0d924ecc9c8e05b86"
+//}
 variable "vpc_id" {
   type      = string
   default   = "current"
 }
+
+variable "region" {
+  description   ="The AWS region you're using"
+  type          =string
+  default       = "eu-central-1"
+}
+
 variable "subnet_id" {
-  type      = string
-  default   = "subnet-05bb983919aff8851"
+  description   ="The Subnet to build the AMI inm that's ssh'able"
+  type          =string
+  default   = "current"
+  //default       ="subnet-05f8f3c120238ca8d"
 }
 
 variable "ami_id" {
@@ -31,17 +44,51 @@ variable "ami_id" {
   default   = "ami-04dfd853d88e818e8"
 }
 
-variable "region" {
-  default   = "eu-central-1"
+variable "BUILD_NUMBER" {
+  description="The build number"
+  type          =string
+  default       ="1"
+}
+
+variable "instance_type" {
+  default       ="t3.large"
+  description   ="The AMI build instance"
+  type          =string
+}
+
+variable "ami_users" {
+  default=[]
+}
+
+variable "associate_public_ip_address" {
+  type          =bool
+  default       =true
+}
+
+variable "ssh_interface" {
+  type          = string
+  default       = "public_ip"
+}
+
+variable "app_name" {
+  type      = string
+  default   = "Zabbix"
+}
+
+variable "ami_prefix" {
+  type      = string
+  default   = "ubuntu base 22.04"
+}
+
+variable "source_path" {
+  type      = string
+  default   = "./"
 }
 
 variable "amazon-ami" {
   default   = "current"
 }
 
-variable "instance_type" {
-  default = "t3.xlarge"
-}
 variable "aws_region" {
   default   = "eu-central-1"
 }
@@ -58,43 +105,63 @@ variable "ssh_user" {
   type      = string
   default   = "ubuntu"
 }
-
-variable "app_name" {
-  type      = string
-  default   = "httpd"
-}
+//variable "subnet_id" {
+//  type      = string
+//  default   = "subnet-05bb983919aff8851"
+//}
 
 variable "script_path" {
   default   = env("SCRIPT_PATH")
 }
-
-######################################
+#locals {
+#  image_options         = var.images[var.image]
+#  image_name            = "${basename(path.cwd)}/${var.image}"
+#  image_description     = local.image_options.core.image_description
+#  image_version         = "${local.image_options.core.image_version}.${var.version}"
+#  image_provider        = var.provider
+#  image_build           = var.build
+#  artifacts_directory   = "${path.cwd}/../../artifacts/${local.image_name}/${local.image_provider}/${var.build}"
+#}
 
 locals {
-  app_name  = "httpd"
-}
-
-locals {
-  ami_name    = "${var.app_name}-prodcution"
-  timestamp   = "${formatdate("YYYYMMDD'-'hhmmss", timestamp())}"
+  app_name            = "Zabbix"
+  root                = path.root
+  scripts_folder      = "${path.root}/scripts"
+  settings_file       = "${path.cwd}/settings.txt"
+  ami_name            = "${var.app_name}-prodcution"
+  timestamp           = "${formatdate("YYYYMMDD'-'hhmmss", timestamp())}"
+  creation_date       = "${formatdate("YYYY-MM-DD-hhmm", timestamp())}"
 }
 
 ########################################
 # => Writing our Sources
-source "amazon-ebs" "httpd" {
-  ami_name            = "packer-${local.app_name}"
+source "amazon-ebs" "Zabbix" {
+  name                = "packer-build"
+  output              = "AWS AMI"
+  ami_description     = "amazon ubuntu AMI"
+  ami_name            = "${var.ami_prefix}-${local.timestamp}"
   instance_type       = "${var.instance_type}"
   region              = "${var.region}"
   source_ami          = "${var.ami_id}"
-  ssh_username        = "${var.ssh_user}"
-  spot_price          = "auto"
-  ssh_wait_timeout    = "10000s"
-  skip_create_ami     = true
+  #spot_instance_types       = ["t3.xlarge"]
+  #enable_unlimited_credits  = true
+  ssh_username              = "${var.ssh_user}"
+  ssh_agent_auth            = false
+  ssh_timeout               = "30m"
+  ssh_wait_timeout          = "10000s"
+
+  ebs_optimized             = true
+  #skip_create_ami           = true
+  associate_public_ip_address     = var.associate_public_ip_address
 
   tags = {
-    Env       = "demo",
-    Name      = "packer-demo-${var.app_name}"
+    Name          = "ubuntu-base-packer"
   }
+
+  spot_price                  = "auto"
+  ssh_interface               = var.ssh_interface
+  //subnet_id                   = var.subnet_id
+  temporary_key_pair_name     = "amazon-packer-{{timestamp}}"
   launch_block_device_mappings {
     device_name           = "/dev/sda1"
     volume_size           = 100
@@ -104,19 +171,19 @@ source "amazon-ebs" "httpd" {
   }
   source_ami_filter {
     filters = {
-      name                = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"
-      root-device-type    = "ebs"
-      virtualization-type = "hvm"
+      name                  = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"
+      root-device-type      = "ebs"
+      virtualization-type   = "hvm"
     }
     most_recent = true
     owners      = ["099720109477"]
   }
 }
-
 ###########################################
 
 build {
-  sources = ["source.amazon-ebs.httpd"]
+
+sources=["source.amazon-ebs.Zabbix"]
 
   provisioner "shell" {
     inline = [
@@ -130,54 +197,72 @@ build {
 
   provisioner "shell" {
     inline = [
-      "sudo apt install --yes -qq apt-transport-https lsb-release ca-certificates software-properties-common curl git iputils-ping libicu-dev gnupg",
-      "sudo apt autoclean"
-      #"sudo rm -rf /var/lib/apt/lists/*",
-      #"sudo rm -rf /var/log/*"
+      "sudo apt-get update -y",
+      "sudo apt install --yes -qq apt-transport-https lsb-release ca-certificates software-properties-common curl wget apt-utils git iputils-ping libicu-dev gnupg",
+      "sudo apt autoclean",
+      "sudo apt-get update -y",
     ]
+    pause_before = "10s"
+    max_retries = 5
+    timeout = "5m"
   }
+
+  provisioner "shell" {
+    inline = ["echo \"Runnning Docker Installation Script\""]
+  }
+
+  provisioner "shell" {
+    environment_vars = [
+      "HOME_DIR=/home/ubuntu"
+    ]
+    execute_command   = "{{.Vars}} sudo -S -E bash -eux '{{.Path}}'"
+    expect_disconnect = true
+    script = "./scripts/install-docker.sh"
+  }
+
+  post-processor "shell-local" {
+    inline = ["echo Hello World from ${source.type}.${source.name}"]
+  }
+
+}
+  #provisioner "shell" {
+  #  inline = [
+  #    "echo '${var.ssh_user} ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/99${var.ssh_user}",
+  #    "chmod 0440 /etc/sudoers.d/99${var.ssh_user}"
+  #  ]
+  #}
+
+
+
+
+
+
+  #post-proccess "local-shell" {
+  #  command = ["echo \"Successfully installed Docker Engine"]
+  #}
 
   # "sudo apt-get install -q -y '${var.pkg}' jq"
-  provisioner "shell" {
-    inline = [
-      "sudo apt update",
-      "sudo apt install apt-transport-https ca-certificates curl software-properties-common",
-      "sudo mkdir -p /etc/apt/keyrings",
-      "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg",
-      "echo \"deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu/gpg $(lsb_release -cs) stable\" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null",
-      "sudo apt update",
-      "apt-cache policy docker-ce",
-      "sudo apt install -y docker-ce",
-      "sudo systemctl status docker",
-      "sudo rm /etc/apt/sources.list.d/docker.list",
-      "sudo groupadd docker",
-      "sudo usermod -aG docker ubuntu",
-      "sudo apt-get clean",
-      "sudo apt-get purge"
-    ]
-  }
 
-  //post-proccess "local-shell" {
-   // command = ["newgrp docker"]
-  //}
+
+
 
   #post-proccess "local-shell" {
   #  command = ["Done installing"]
   #}
 
-  provisioner "shell" {
-    inline = [
-      "sudo apt update --yes",
-      "echo \"Done Installing Docker Compose version: 2\"",
-      "sudo curl -L \"https://github.com/docker/compose/releases/download/1.21.0//docker-compose-$(uname -s)-$(uname -m)\" | sudo tee /usr/local/bin/docker-compose",
-      "sudo rm /usr/local/bin/docker-compose",
-      "sudo apt-get install -y docker-compose",
-      "sudo chmod +x /usr/local/bin/docker-compose",
-      "docker-compose --version"
-      #"sudo rm -rf \"/var/lib/apt/lists/*\" \"/var/cache/apt/*\""
-    ]
-  }
-}
+  //provisioner "shell" {
+  //  inline = [
+  //    "sudo apt update --yes",
+  //    "echo \"Done Installing Docker Compose version: 2\"",
+  //    "sudo curl -L \"https://github.com/docker/compose/releases/download/1.21.0//docker-compose-$(uname -s)-$(uname -m)\" | sudo tee /usr/local/bin/docker-compose",
+  //    "sudo rm /usr/local/bin/docker-compose",
+  //    "sudo apt-get install -y docker-compose",
+  //    "sudo chmod +x /usr/local/bin/docker-compose",
+  //    "docker-compose --version"
+  //    #"sudo rm -rf \"/var/lib/apt/lists/*\" \"/var/cache/apt/*\""
+  //  ]
+  //}
+
   #provisioner "shell" {
     #only = ["amazon-ebs.unlimited"]
   #  inline = [
