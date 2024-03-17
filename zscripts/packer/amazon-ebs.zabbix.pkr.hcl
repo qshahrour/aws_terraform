@@ -105,10 +105,10 @@ variable "ssh_user" {
   type      = string
   default   = "ubuntu"
 }
++
 variable "unlimitedCPUCredit" {
   type  = string
 }
-
 
 variable "script_path" {
   default   = env("SCRIPT_PATH")
