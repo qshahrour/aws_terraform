@@ -98,11 +98,6 @@ variable "vpc_id" {
   type      = string
   default   = "current"
 }
-//variable "subnet_id" {
-//  type      = string
-//  default   = "subnet-05bb983919aff8851"
-//}
-
 variable "script_path" {
   default   = env("SCRIPT_PATH")
 }

@@ -105,10 +105,10 @@ variable "ssh_user" {
   type      = string
   default   = "ubuntu"
 }
-//variable "subnet_id" {
-//  type      = string
-//  default   = "subnet-05bb983919aff8851"
-//}
+variable "unlimitedCPUCredit" {
+  type  = string
+}
+
 
 variable "script_path" {
   default   = env("SCRIPT_PATH")
@@ -224,31 +224,35 @@ sources=["source.amazon-ebs.Zabbix"]
     inline = ["echo Hello World from ${source.type}.${source.name}"]
   }
 
+  provisioner "shell" {
+    environment_vars = [
+      "HOME_DIR=/home/ubuntu"
+    ]
+    execute_command   = "{{.Vars}} sudo -S -E bash -eux '{{.Path}}'"
+    expect_disconnect = true
+    script = "./scripts/install-compose.sh"
+  }
+
+  provisioner "shell" {
+    only = ["amazon-ebs.unlimited"]
+    inline = [
+      "aws configure set region ${var.region} --profile ${var.profile}",\"CREDITTYPE=$( ${AWS_DEFAULT_REGION}=eu-central-2 aws ec2 describe-instance-credit-specifications --instance-ids ${build.ID} | jq --raw-output \".InstanceCreditSpecifications|.[]|.CpuCredits\" )",
+      "echo CPU Credit Specification is ${CREDITTYPE}", "[[ $CREDITTYPE == ${var.unlimitedCPUCredit} ]]"
+    ]
+  }
+
 }
-  #provisioner "shell" {
-  #  inline = [
-  #    "echo '${var.ssh_user} ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/99${var.ssh_user}",
-  #    "chmod 0440 /etc/sudoers.d/99${var.ssh_user}"
-  #  ]
-  #}
-
-
-
-
-
-
-  #post-proccess "local-shell" {
-  #  command = ["echo \"Successfully installed Docker Engine"]
-  #}
-
-  # "sudo apt-get install -q -y '${var.pkg}' jq"
-
-
-
-
-  #post-proccess "local-shell" {
-  #  command = ["Done installing"]
-  #}
+  // provisioner "shell" {
+  // inline = [
+  //    "echo '${var.ssh_user} ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/99${var.ssh_user}",
+  //    "chmod 0440 /etc/sudoers.d/99${var.ssh_user}"
+  //  ]
+  //}
+  // command = ["echo \"Successfully installed Docker Engine"]
+  // "sudo apt-get install -q -y '${var.pkg}' jq"
+  // post-proccess "local-shell" {
+  //  command = ["Done installing"]
+  //}
 
   //provisioner "shell" {
   //  inline = [
@@ -263,25 +267,18 @@ sources=["source.amazon-ebs.Zabbix"]
   //  ]
   //}
 
-  #provisioner "shell" {
-    #only = ["amazon-ebs.unlimited"]
-  #  inline = [
-  #    "aws configure set region ${var.region} --profile ${var.profile}",\"CREDITTYPE=$( ${AWS_DEFAULT_REGION}=eu-central-2 aws ec2 describe-instance-credit-specifications --instance-ids ${build.ID} | jq --raw-output \".InstanceCreditSpecifications|.[]|.CpuCredits\" )",
-  #    "echo CPU Credit Specification is ${CREDITTYPE}",
-  #    "[[ $CREDITTYPE == ${var.unlimitedCPUCredit} ]]"
-  #  ]
-  #}
+
 
   ## This provisioner only runs for the 'first-example' source.
-  #provisioner "shell" {
-  #  only = ["amazon-ebs.httpd"]
-  #  inline = [
-  #    "aws configure set region ${var.region} --profile default",
-  #    "CREDITTYPE=$(aws ec2 describe-instance-credit-specifications --instance-ids ${build.ID}| jq --raw-output \".InstanceCreditSpecifications|.[]|.CpuCredits\")",
-  #    "echo CPU Credit Specification is $CREDITTYPE",
-  #    "[[ $CREDITTYPE == ${var.standardCPUCredit} ]]"
-  #  ]
-  #}
+  // provisioner "shell" {
+  //  only = ["amazon-ebs.httpd"]
+  //  inline = [
+  //      "aws configure set region ${var.region} --profile default",
+  //      "CREDITTYPE=$(aws ec2 describe-instance-credit-specifications --instance-ids ${build.ID}| jq --raw-output \".InstanceCreditSpecifications|.[]|.CpuCredits\")",
+  //      "echo CPU Credit Specification is $CREDITTYPE",
+  //      "[[ $CREDITTYPE == ${var.standardCPUCredit} ]]"
+  //  ]
+  //}
 
 
 #  # This provisioner only the second for the source.
@@ -291,27 +288,7 @@ sources=["source.amazon-ebs.Zabbix"]
 #    expect_disconnect = true
 #      // fileset will list files in etc/scripts sorted in an alphanumerical way.
 #    scripts           = fileset(".", "zscripts/*.sh")
-#  }
-#
-#  provisioner "shell" {
-#    only = ["amazon-ebs.unlimited"]
-#	  inline = ["TOKEN=\"$( curl -s -X PUT \"http://169.254.169.254/latest/api/token\" -H \"X-aws-ec2-metadata-token-ttl-seconds: 21600\" )\" && curl -H \"X-aws-ec2-metadata-token: $TOKEN\" -s http://169.254.169.254/latest/meta-data/"]
-#	  script = "./${path.root}/010-update,sh"
-#	  environment_vars = ["USER=${var.ssh_user}", "BUILDER=${upper(build.ID)}"]
-#  }
-#
-#  provisioner "shell" {
-#    only = ["amazon-ebs.standard"]
-#    inline = [
-#      "aws configure set region ${var.region} --profile ${var.profile}",
-#      "CREDITTYPE=$( aws ec2 describe-instance-credit-specifications --instance-ids ${build.ID}| jq --raw-output \".InstanceCreditSpecifications|.[]|.CpuCredits\" )",
-#      "echo CPU Credit Specification is $CREDITTYPE",
-#      "[[ $CREDITTYPE == ${var.standardCPUCredit} ]"
-#    ]
-#  }
-
-#  provisioner "shell" {
-#    environment_vars = #      EPO_URLq="https://download.docker.com/linux/${DIST_ID}",
+#  }   environment_vars = #      EPO_URLq="https://download.docker.com/linux/${DIST_ID}",
 #      ARCH="$( dpkg --print-architecture )"
 #    ]
 #    only = ["amazon-ebs.standard"]
@@ -325,19 +302,3 @@ sources=["source.amazon-ebs.Zabbix"]
 #      "curl -fsSL \"${REPO_URL}/gpg\ | apt-key add -",
 #      "echo \"deb [arch=\"${ARCH}\"] \"${REPO_URL}\" \"${DIST_VERSION}\" test\" > /etc/apt/sources.list.d/docker.list",
 #      "sudo apt-get update"
-#    ]
-#    timeout = "5m"
-#    max_retries = 5
-#  }
-
-#  provisioner "shell" {
-#    only = ["amazon-ebs.unlimited"]
-#    inline = [
-#      "aws configure set region ${var.region} --profile ${var.profile}",
-#      "CREDITTYPE=$( ${AWS_DEFAULT_REGION}=eu-central-2 aws ec2 describe-instance-credit-specifications --instance-ids ${build.ID} | jq --raw-output \".InstanceCreditSpecifications|.[]|.CpuCredits\" )",
-#     "echo CPU Credit Specification is ${CREDITTYPE}",
-#      "[[ $CREDITTYPE == ${var.unlimitedCPUCredit} ]]"
-#    ]
-#  }
-#}
-
